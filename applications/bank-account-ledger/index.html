@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Account Transaction Ledger</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="bank-ledger-header">
+        <img src="./favicon.svg" alt="Ledger icon" class="bank-ledger-header-icon" />
+        <h1 class="title">Account Transaction Ledger</h1>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="action-toolbar">
+        <div class="toolbar-actions">
+          <button id="new-transaction-btn" class="btn btn--primary" type="button">
+            New Transaction
+          </button>
+
+          <button id="export-ledger-btn" class="btn btn--primary" type="button">
+            Export Ledger
+          </button>
+
+          <label for="import-ledger-input" class="btn btn--success">Import Ledger</label>
+          <input id="import-ledger-input" type="file" accept="application/json,.json" hidden />
+
+          <button id="clear-ledger-btn" class="btn btn--danger" type="button">Clear Ledger</button>
+        </div>
+
+        <div class="account-summaries">
+          <div class="summary-group">
+            <h3>Activity</h3>
+            <div class="summary-items">
+              <p class="transaction-summary">Transactions: <span id="transaction-count">0</span></p>
+              <p class="transaction-summary">Pending: <span id="pending-count">0</span></p>
+            </div>
+          </div>
+
+          <div class="summary-group">
+            <h3>Balances</h3>
+            <div class="summary-items">
+              <p class="transaction-summary">Posted: <span id="posted-balance">$0.00</span></p>
+              <p class="transaction-summary">
+                Projected: <span id="projected-balance">$0.00</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div id="transaction-form-overlay" class="overlay hidden">
+        <form
+          id="new-transaction-form"
+          class="new-transaction-form"
+          aria-labelledby="transaction-form-title"
+        >
+          <div class="transaction-form-header">
+            <h2 class="transaction-form-title" id="transaction-form-title">
+              Enter New Transaction
+            </h2>
+            <button
+              id="close-transaction-form-btn"
+              class="close-transaction-form-btn"
+              type="button"
+              aria-label="Close"
+            >
+              <svg
+                class="close-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 48 48"
+                width="48px"
+                height="48px"
+              >
+                <path
+                  fill="#F44336"
+                  d="M21.5 4.5H26.501V43.5H21.5z"
+                  transform="rotate(45.001 24 24)"
+                />
+                <path
+                  fill="#F44336"
+                  d="M21.5 4.5H26.5V43.501H21.5z"
+                  transform="rotate(135.008 24 24)"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div class="transaction-form-body">
+            <div class="transaction-choice-row">
+              <fieldset class="transaction-choice-group">
+                <legend class="transaction-form-label">Transaction Type:</legend>
+                <div class="transaction-type-options">
+                  <input
+                    type="radio"
+                    id="deposit"
+                    name="transaction-type"
+                    value="deposit"
+                    required
+                  />
+                  <label for="deposit" class="choice-pill">Deposit</label>
+                  <input
+                    type="radio"
+                    id="withdraw"
+                    name="transaction-type"
+                    value="withdraw"
+                    required
+                  />
+                  <label for="withdraw" class="choice-pill">Withdraw</label>
+                </div>
+              </fieldset>
+
+              <fieldset class="transaction-choice-group">
+                <legend class="transaction-form-label">Transaction Status:</legend>
+                <div class="transaction-status-options">
+                  <input
+                    type="radio"
+                    id="posted"
+                    name="transaction-status"
+                    value="posted"
+                    checked
+                    required
+                  />
+                  <label for="posted" class="choice-pill">Posted</label>
+                  <input
+                    type="radio"
+                    id="pending"
+                    name="transaction-status"
+                    value="pending"
+                    required
+                  />
+                  <label for="pending" class="choice-pill">Pending</label>
+                </div>
+              </fieldset>
+            </div>
+            <div class="transaction-form-row">
+              <div class="form-group">
+                <label class="transaction-form-label" for="transaction-date">Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  class="form-control"
+                  id="transaction-date"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="transaction-form-label" for="transaction-category">Category</label>
+                <select name="category" id="transaction-category" class="form-control" required>
+                  <option value="">--Please choose a category--</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="transaction-form-label" for="transaction-description"
+                >Description</label
+              >
+              <input
+                type="text"
+                name="description"
+                class="form-control"
+                id="transaction-description"
+                required
+              />
+            </div>
+
+            <p id="form-message" class="form-message hidden" aria-live="polite"></p>
+
+            <div class="form-group">
+              <label class="transaction-form-label" for="transaction-amount">Amount</label>
+              <input
+                type="number"
+                name="amount"
+                class="form-control"
+                id="transaction-amount"
+                min="0.01"
+                step="0.01"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="transaction-form-actions">
+            <button type="submit" class="btn btn--success" id="submit-btn">Add Transaction</button>
+            <button type="button" class="btn btn--primary" id="cancel-btn">Cancel</button>
+            <button type="button" class="btn btn--danger hidden" id="delete-btn">
+              Delete Transaction
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div id="clear-ledger-overlay" class="overlay hidden">
+        <div class="confirm-modal confirm-modal--large">
+          <h2 id="clear-ledger-title">Clear Entire Transaction Ledger</h2>
+          <div id="clear-ledger-message">
+            <p>
+              This will
+              <strong class="amount--negative">PERMANENTLY DELETE ALL</strong> transactions from the
+              ledger.
+            </p>
+            <p>
+              Please confirm to
+              <strong class="amount--negative">DELETE ALL TRANSACTIONS</strong> from this ledger!
+            </p>
+          </div>
+
+          <div id="clear-ledger-summary"></div>
+
+          <div class="confirm-actions">
+            <button
+              id="confirm-clear-ledger-btn"
+              class="btn btn--danger"
+              type="button"
+              title="This action cannot be reversed..."
+            >
+              Clear Ledger
+            </button>
+            <button id="cancel-clear-ledger-btn" class="btn btn--primary" type="button">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="delete-confirm-overlay" class="overlay hidden">
+        <div class="confirm-modal">
+          <h2 id="delete-confirm-title">Delete Transaction</h2>
+          <p id="delete-confirm-message"></p>
+
+          <div class="confirm-actions">
+            <button id="cancel-delete-btn" class="btn btn--primary" type="button">Cancel</button>
+            <button id="confirm-delete-btn" class="btn btn--danger" type="button">
+              Delete Transaction
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="discard-confirm-overlay" class="overlay hidden">
+        <div class="confirm-modal confirm-modal--wide">
+          <h2>Discard Changes</h2>
+          <p id="discard-confirm-message">You have unsaved changes. Do you want to discard them?</p>
+
+          <div id="discard-review-container" class="discard-review-container">
+            <div class="discard-review-header-row">
+              <span>Field</span>
+              <span>Original</span>
+              <span>Changes</span>
+            </div>
+
+            <div id="discard-review-contents" class="discard-review-contents"></div>
+          </div>
+
+          <div class="confirm-actions">
+            <button id="keep-editing-btn" class="btn btn--primary" type="button">
+              Keep Editing
+            </button>
+            <button id="discard-changes-btn" class="btn btn--danger" type="button">
+              Discard Changes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="import-ledger-overlay" class="overlay hidden">
+        <div class="confirm-modal confirm-modal--large">
+          <h2>Import Ledger Backup?</h2>
+
+          <p>This will replace your current ledger with the selected backup file.</p>
+
+          <div id="import-ledger-summary" class="confirm-details"></div>
+
+          <div class="confirm-actions">
+            <button id="confirm-import-ledger-btn" class="btn btn--danger" type="button">
+              Replace Ledger
+            </button>
+            <button id="cancel-import-ledger-btn" class="btn btn--primary" type="button">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="overdraft-confirm-overlay" class="overlay hidden">
+        <div class="confirm-modal confirm-modal--wide">
+          <h2 id="overdraft-modal-title">Overdraft Warning</h2>
+          <div id="overdraft-confirm-message" class="overdraft-confirm-message">
+            <p>
+              The current transaction will cause an
+              <span class="amount--negative"><strong>OVERDRAFT</strong></span> of your account.
+            </p>
+            <p>Do you want to continue?</p>
+          </div>
+
+          <div id="overdraft-context" class="overdraft-context">
+            <div><strong>Date: </strong><span id="overdraft-context-date"></span></div>
+            <div>
+              <strong>Description: </strong><span id="overdraft-context-description"></span>
+            </div>
+          </div>
+
+          <div id="overdraft-review-container" class="overdraft-review-container">
+            <div class="overdraft-review-header-row">
+              <span>Transaction Amount</span>
+              <span>Balance Before</span>
+              <span>Balance After</span>
+            </div>
+
+            <div id="overdraft-review-contents" class="overdraft-review-contents"></div>
+          </div>
+
+          <div class="confirm-actions">
+            <button id="overdraft-proceed-btn" class="btn btn--danger" type="button">
+              Proceed
+            </button>
+            <button id="overdraft-edit-btn" class="btn btn--success" type="button">
+              Edit Transaction
+            </button>
+            <button id="overdraft-cancel-btn" class="btn btn--primary" type="button">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="ledger-section">
+        <h2 class="ledger-section-title">Pending Transactions</h2>
+        <div id="pending-ledger-header" class="ledger-header">
+          <span>Date</span>
+          <span>Description</span>
+          <span>Category</span>
+          <span>Amount</span>
+          <span>Projected Balance</span>
+          <span aria-hidden="true"></span>
+        </div>
+        <div
+          id="pending-transactions"
+          class="transactions-container"
+          aria-label="Pending account transactions"
+        ></div>
+      </section>
+
+      <section class="ledger-section">
+        <h2 class="ledger-section-title">Posted Transactions</h2>
+        <div id="posted-ledger-header" class="ledger-header">
+          <span>Date</span>
+          <span>Description</span>
+          <span>Category</span>
+          <span>Amount</span>
+          <span>Balance</span>
+          <span aria-hidden="true"></span>
+        </div>
+        <div
+          id="posted-transactions"
+          class="transactions-container"
+          aria-label="Posted account transactions"
+        ></div>
+      </section>
+
+      <div id="toast-container" class="toast-container"></div>
+    </main>
+
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>

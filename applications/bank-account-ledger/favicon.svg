@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background -->
+  <rect x="0" y="0" width="64" height="64" rx="12" fill="#112d4e"></rect>
+
+  <!-- Accent bar (left) -->
+  <rect x="6" y="8" width="6" height="48" rx="3" fill="#10b981"></rect>
+
+  <!-- Ledger lines -->
+  <rect x="18" y="18" width="34" height="4" rx="2" fill="#94a3b8"></rect>
+  <rect x="18" y="28" width="26" height="4" rx="2" fill="#94a3b8"></rect>
+  <rect x="18" y="38" width="30" height="4" rx="2" fill="#94a3b8"></rect>
+
+  <!-- Dollar indicator -->
+  <text x="40" y="54" font-size="18" text-anchor="middle" fill="#10b981" font-family="Arial, sans-serif">$</text>
+</svg>
