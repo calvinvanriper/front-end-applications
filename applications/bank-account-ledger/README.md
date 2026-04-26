@@ -105,7 +105,7 @@ The structure separates responsibilities into focused modules, making the applic
 
 ## 🔗 Live Demo
 
-[View Application](https://calvinvanriper.dev/path-to-your-ledger)
+[View Application](https://calvinvanriper.dev/front-end-applications/applications/bank-account-ledger/)
 
 ---
 
