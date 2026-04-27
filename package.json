@@ -1,0 +1,33 @@
+{
+  "name": "javascript-learning-labs",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "JavaScript learning labs and mini-projects",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:md": "markdownlint --config .vscode/markdownlint.json",
+    "lint:md:all": "markdownlint --config .vscode/markdownlint.json \"**/*.md\"",
+    "lint:all": "npm run lint && npm run lint:md:all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/calvinvanriper/javascript-learning-labs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/calvinvanriper/javascript-learning-labs/issues"
+  },
+  "homepage": "https://github.com/calvinvanriper/javascript-learning-labs#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.8.1"
+  }
+}

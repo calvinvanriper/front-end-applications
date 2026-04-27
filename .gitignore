@@ -1,0 +1,36 @@
+# Node dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.idea/
+
+# Caches
+.eslintcache
+.cache/
+
+# VS Code personal/debug files only (keep standards files committed)
+.vscode/launch.json
+.vscode/tasks.json
+.vscode/*.code-workspace
+
+# Build output (future-proofing)
+dist/
+build/
+coverage/
+
+# Misc
+*.log
+pnpm-debug.log*

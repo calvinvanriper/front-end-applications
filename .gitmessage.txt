@@ -1,0 +1,68 @@
+# <type>(<scope>): <short summary>
+#
+# Types:
+#   feat     - new application or feature
+#   fix      - bug fix or behavior correction
+#   refactor - code restructuring without behavior change
+#   docs     - README or documentation updates
+#   style    - formatting, CSS, or non-functional UI changes
+#   chore    - tooling, configuration, or maintenance tasks
+#
+# Scope defines WHAT area of the repo is affected.
+# Use the most specific scope available.
+#
+# --------------------------------------------------
+# Meta scopes (repo-wide changes):
+#
+#   repo-root     → root README.md or overall repo structure
+#   standards     → CONTRIBUTING.md, commit templates, documentation standards
+#   tooling       → ESLint, Prettier, package.json, config files, scripts
+#
+# --------------------------------------------------
+# Application scopes (primary scopes for this repo):
+#
+#   bank-account-ledger
+#   <future-application-name>
+#
+# Use application scopes when modifying a specific application.
+#
+# --------------------------------------------------
+# Summary guidelines:
+#
+# - Use present tense ("add", not "added")
+# - Be concise but descriptive
+# - Do not end with a period
+#
+# Examples:
+#
+#   feat(bank-account-ledger): implement overdraft confirmation workflow
+#
+#   docs(repo-root): add front-end application overview
+#
+#   fix(bank-account-ledger): correct negative balance styling in summary
+#
+#   chore(tooling): add ESLint and Prettier configuration
+#
+# --------------------------------------------------
+#
+# Body guidelines:
+#
+# - Explain WHY the change exists
+# - Describe architectural intent or design reasoning
+# - Wrap lines at ~72 characters
+# - Focus on intent, not implementation details
+#
+# Example body:
+#
+# Implements state-driven transaction handling to ensure balance
+# calculations remain consistent across pending and posted updates.
+#
+# Separates workflow logic from UI rendering to improve
+# maintainability and reduce coupling between components.
+#
+# --------------------------------------------------
+#
+# Please enter the commit message for your changes.
+# Lines starting with '#' will be ignored.
+# An empty message aborts the commit.
+#
