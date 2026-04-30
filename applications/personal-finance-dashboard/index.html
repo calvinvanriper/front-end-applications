@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Finance Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="stylesheet" href="./styles/styles.css" />
+  </head>
+  <body>
+    <header>
+      <div class="dashboard-header">
+        <img src="./favicon.svg" alt="Dashboard icon" class="dashboard-header-icon" />
+        <h1 class="dashboard-title">Personal Finance Dashboard</h1>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="dashboard-card currency-converter-card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Currency Tools</p>
+            <h2>Currency Converter</h2>
+          </div>
+          <p class="card-description">Convert between currencies using live exchange rate data.</p>
+        </div>
+
+        <form class="converter-form" id="converter-form">
+          <div class="form-field">
+            <label for="amount">Amount</label>
+            <input id="amount" type="number" min="0" step="0.01" placeholder="100.00" />
+          </div>
+
+          <div class="form-field">
+            <label for="from-currency">From</label>
+            <select id="from-currency">
+              <option value="USD">USD</option>
+            </select>
+          </div>
+
+          <button class="swap-btn" id="swap-btn" type="button" aria-label="Swap currencies">
+            ⇄
+          </button>
+
+          <div class="form-field">
+            <label for="to-currency">To</label>
+            <select id="to-currency">
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+
+          <button class="btn btn--primary" id="convert-currency-btn" type="submit">Convert</button>
+        </form>
+
+        <div class="converter-result">
+          <p class="result-label">Converted Amount</p>
+          <p class="result-value" id="result-value">$0.00</p>
+          <p class="result-meta" id="result-meta">Rate data will appear after conversion.</p>
+        </div>
+      </section>
+
+      <section class="dashboard-grid">
+        <section
+          class="dashboard-card stock-watchlist-card"
+          aria-labelledby="stock-watchlist-title"
+        >
+          <div class="card-header">
+            <div>
+              <p class="eyebrow">Market Watch</p>
+              <h2 id="stock-watchlist-title">Stock Watchlist</h2>
+            </div>
+          </div>
+
+          <form class="stock-form" id="stock-form">
+            <div class="form-field">
+              <label for="stock-symbol">Stock symbol</label>
+
+              <div class="stock-form-row">
+                <div class="stock-search-field">
+                  <input
+                    type="text"
+                    id="stock-symbol"
+                    name="stockSymbol"
+                    placeholder="AAPL"
+                    autocomplete="off"
+                  />
+
+                  <div class="stock-search-results hidden" id="stock-search-results"></div>
+                </div>
+
+                <div class="stock-form-actions">
+                  <button class="btn btn--primary" id="add-stock-btn" type="submit">
+                    Add Stock
+                  </button>
+                  <button class="btn btn--secondary" id="refresh-stocks-btn" type="button">
+                    Refresh
+                  </button>
+                  <button class="btn btn--danger" id="clear-stocks-btn" type="button">
+                    Clear Stocks
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="stock-watchlist" id="stock-watchlist">
+            <p class="empty-state">No stocks added yet.</p>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <section id="modal-root" aria-label="Application dialogs">
+      <div class="modal hidden" id="confirmation-modal">
+        <div class="modal-content">
+          <h2 id="confirmation-title">Confirm Action</h2>
+          <p id="confirmation-message">Are you sure?</p>
+
+          <div class="modal-actions">
+            <button class="btn btn--secondary" id="cancel-confirmation-btn" type="button">
+              Cancel
+            </button>
+            <button class="btn btn--danger" id="confirm-action-btn" type="button">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="toast-container"
+      id="toast-container"
+      aria-live="polite"
+      aria-label="Notifications"
+    ></section>
+
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>
