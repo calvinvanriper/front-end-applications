@@ -1,4 +1,4 @@
-const BASE_URL = 'https://open.er-api.com/v6/latest';
+import { BASE_URL } from '../config/api-config.js';
 
 export async function getCurrencyConversion(amount, fromCurrency, toCurrency) {
   const response = await fetch(`${BASE_URL}/${fromCurrency}`);

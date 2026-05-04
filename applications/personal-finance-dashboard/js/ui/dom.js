@@ -19,4 +19,8 @@ export const dom = {
   refreshStocksBtn: document.getElementById('refresh-stocks-btn'),
   toastContainer: document.getElementById('toast-container'),
   stockSearchResults: document.getElementById('stock-search-results'),
+  metalsList: document.getElementById('metals-list'),
+  refreshMetalsBtn: document.getElementById('refresh-metals-btn'),
+  stocksUpdatedMeta: document.getElementById('stocks-updated-meta'),
+  metalsUpdatedMeta: document.getElementById('metals-updated-meta'),
 };

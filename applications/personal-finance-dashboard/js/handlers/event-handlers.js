@@ -6,11 +6,13 @@ import {
   processClearStockWatchlist,
   processRefreshStockWatchlist,
 } from '../workflows/stocks-workflows.js';
+import { processRefreshMetals } from '../workflows/metals-workflows.js';
 import { showConfirmationModal, hideConfirmationModal } from '../ui/modals.js';
 import { appState } from '../state/app-state.js';
 import { searchStockSymbols } from '../api/stocks-api.js';
-import { renderStockSearchResults } from '../ui/render.js';
+import { renderStockSearchResults, renderStocksUpdatedMeta } from '../ui/render.js';
 import { showResultToast } from '../ui/notifications.js';
+import { getLatestStockTimestamp } from '../utils/formatters.js';
 
 let stockSearchTimeout = null;
 
@@ -110,6 +112,7 @@ export async function handleRefreshStockWatchlistClick(stockWatchlist) {
     dom.refreshStocksBtn.disabled = false;
   }
 
+  renderStocksUpdatedMeta(getLatestStockTimestamp(stockWatchlist.getStocks()));
   showResultToast(result);
 }
 
@@ -147,4 +150,25 @@ export function handleStockSearchResultClick(event) {
 
   renderStockSearchResults([]);
   dom.stockSymbolInput.focus();
+}
+
+export async function handleRefreshMetalsClick() {
+  let result;
+
+  dom.refreshMetalsBtn.disabled = true;
+
+  try {
+    result = await processRefreshMetals();
+  } catch (error) {
+    console.error(error);
+
+    result = {
+      success: false,
+      reason: 'metalsRefreshFailed',
+    };
+  } finally {
+    dom.refreshMetalsBtn.disabled = false;
+  }
+
+  showResultToast(result);
 }

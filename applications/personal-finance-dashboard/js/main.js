@@ -1,18 +1,30 @@
 import { dom } from './ui/dom.js';
 import * as handlers from './handlers/event-handlers.js';
 import { getSupportedCurrencies } from './api/currency-api.js';
-import { populateCurrencyOptions, renderStockWatchlist } from './ui/render.js';
+import {
+  populateCurrencyOptions,
+  renderStockWatchlist,
+  renderMetalsSection,
+  renderStocksUpdatedMeta,
+} from './ui/render.js';
 import { StockWatchlist } from './models/stock-watchlist.js';
-import { loadStockWatchlist } from './storage/persistence.js';
+import { loadStockWatchlist, loadMetalsCache } from './storage/persistence.js';
 import { appState } from './state/app-state.js';
+import { getLatestStockTimestamp } from './utils/formatters.js';
 
 async function initializeApp() {
   const currencies = await getSupportedCurrencies();
   const savedStocks = loadStockWatchlist();
+  const cachedMetals = loadMetalsCache();
+
+  if (cachedMetals?.currentPrices?.length > 0) {
+    renderMetalsSection(cachedMetals.currentPrices, cachedMetals.lastFetched);
+  }
 
   stockWatchlist.loadStocks(savedStocks);
   populateCurrencyOptions(currencies);
   renderStockWatchlist(stockWatchlist.getStocks());
+  renderStocksUpdatedMeta(getLatestStockTimestamp(stockWatchlist.getStocks()));
 }
 
 const stockWatchlist = new StockWatchlist();
@@ -50,4 +62,5 @@ dom.refreshStocksBtn.addEventListener('click', () => {
 });
 dom.stockSymbolInput.addEventListener('input', handlers.handleStockSymbolInput);
 dom.stockSearchResults.addEventListener('click', handlers.handleStockSearchResultClick);
+dom.refreshMetalsBtn.addEventListener('click', handlers.handleRefreshMetalsClick);
 initializeApp();

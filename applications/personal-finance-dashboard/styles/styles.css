@@ -107,11 +107,22 @@ header {
 
 .eyebrow {
   margin: 0 0 0 0.25rem;
-  color: var(--accent-blue-focus);
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08rem;
   text-transform: uppercase;
+}
+
+.eyebrow--currency {
+  color: var(--positive);
+}
+
+.eyebrow--stocks {
+  color: var(--accent-blue-focus);
+}
+
+.eyebrow--metals {
+  color: var(--accent-gold);
 }
 
 /* -------------------------------------------------------------- */
@@ -237,16 +248,10 @@ header {
   white-space: nowrap;
 }
 
-.stock-watchlist {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 1rem;
-  margin-top: 1.35rem;
-}
-
 .stock-form .form-field {
   margin-bottom: 0;
 }
+
 /* -------------------------------------------------------------- */
 /* ------------------------BUTTON SYSTEM------------------------- */
 /* -------------------------------------------------------------- */
@@ -323,8 +328,8 @@ header {
   display: inline-grid;
   place-items: center;
 
-  width: 1.65rem;
-  height: 1.65rem;
+  width: 1.1rem;
+  height: 1.1rem;
 
   color: var(--text-secondary);
   background: var(--link-btn);
@@ -411,71 +416,95 @@ header {
 }
 
 /* -------------------------------------------------------------- */
-/* --------------------STOCK WATCHLIST CARDS--------------------- */
+/* ----------------------ASSET PRICE CARDS----------------------- */
 /* -------------------------------------------------------------- */
 
-.stock-card {
+/* -----------------------ASSET CARD BASE------------------------ */
+
+.asset-card {
   position: relative;
   padding: 1rem;
   border: var(--border-subtle);
   border-radius: var(--radius-xl);
-  background: var(--surface-muted);
-  box-shadow: var(--shadow-soft);
   transition: background 0.2s ease;
 }
 
-.stock-card:hover {
-  background: var(--surface-hover);
-}
+/* ----------------------ASSET CARD HEADER----------------------- */
 
-.stock-card-header {
+.asset-card-header {
   display: flex;
   align-items: baseline;
   gap: 1rem;
-  padding-right: 2rem;
+  padding-right: 1.1rem;
 }
 
-.stock-card h3 {
+.asset-card h3 {
   margin: 0;
 }
 
-.stock-name {
+/* ----------------------ASSET CARD DETAILS---------------------- */
+
+.card-meta {
+  margin: 0.15rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.card-meta span {
+  color: var(--text-primary);
+}
+
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.asset-name {
   margin: 0.35rem 0 0;
   text-align: center;
+  font-size: 0.85rem;
 
   color: var(--text-secondary);
-  font-size: 0.85rem;
 
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.stock-price {
+.asset-price {
   margin: 0;
+  margin-left: auto;
+
   font-size: 1.35rem;
   font-weight: 700;
-  margin-left: auto;
 }
 
-.stock-change {
-  margin: 0.5rem 0 0;
+.asset-change {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem;
   font-weight: 700;
 }
 
-.stock-change--positive {
+/* ---------------------ASSET CHANGE STATES---------------------- */
+
+.asset-change--positive {
   color: var(--positive);
 }
 
-.stock-change--negative {
+.asset-change--negative {
   color: var(--negative);
 }
 
-.stock-change--neutral {
+.asset-change--neutral {
   color: var(--text-secondary);
 }
 
-.stock-card-actions {
+/* ----------------------ASSET CARD ACTIONS---------------------- */
+
+.asset-card-actions {
   position: absolute;
   top: 0.6rem;
   right: 0.6rem;
@@ -483,6 +512,43 @@ header {
   display: flex;
   gap: 0.35rem;
 }
+
+/* -----------------------STOCK VARIANTS------------------------- */
+
+.stock-watchlist {
+  margin-top: 1.5rem;
+}
+
+.stock-card {
+  background: var(--surface-muted);
+  border-color: var(--accent-blue-focus);
+  box-shadow: var(--shadow-soft);
+}
+
+.stock-card:hover {
+  background: var(--blue-600-a15);
+}
+
+/* ------------------------METAL VARIANT------------------------- */
+
+.metals-list {
+  margin-top: 1.5rem;
+}
+
+.metal-card {
+  background: var(--surface-muted);
+  border-color: var(--accent-gold);
+  box-shadow: var(--shadow-soft);
+}
+
+.metal-card:hover {
+  background: var(--amber-300-a12);
+}
+
+.metals-meta {
+  margin-bottom: 0.75rem;
+}
+/* -----------------------CURRENCY VARIANT----------------------- */
 
 /* -------------------------------------------------------------- */
 /* -------------------OVERLAY / MODAL SHELL---------------------- */
@@ -497,7 +563,8 @@ header {
   justify-content: center;
 
   background: var(--black-a50);
-  background-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 
   z-index: 1000;
 }

@@ -1,5 +1,10 @@
 import { dom } from './dom.js';
-import { formatCurrency, formatDateTime, formatCurrencyOptionLabel } from '../utils/formatters.js';
+import {
+  formatCurrency,
+  formatDateTime,
+  formatCurrencyOptionLabel,
+  formatLastUpdated,
+} from '../utils/formatters.js';
 
 export function renderConversionResult(conversion) {
   dom.resultValue.textContent = formatCurrency(conversion.convertedAmount, conversion.toCurrency);
@@ -35,8 +40,8 @@ export function renderStockWatchlist(stockQuotes) {
   dom.stockWatchList.innerHTML = stockQuotes
     .map(
       (stockQuote) => `
-        <article class="stock-card" data-symbol="${stockQuote.symbol}">
-          <div class="stock-card-actions">
+        <article class="asset-card stock-card" data-symbol="${stockQuote.symbol}">
+          <div class="asset-card-actions">
             <button
               class="stock-icon-btn stock-icon-btn--danger"
               type="button"
@@ -48,16 +53,20 @@ export function renderStockWatchlist(stockQuotes) {
             </button>
           </div>
 
-          <div class="stock-card-header">
+          <div class="asset-card-header">
             <h3>${stockQuote.symbol}</h3>
-            <p class="stock-price">$${stockQuote.price.toFixed(2)}</p>
+            <p class="asset-price">$${stockQuote.price.toFixed(2)}</p>
           </div>
 
-          <p class="stock-name">${stockQuote.name}</p>
+          <p class="asset-name">${stockQuote.name}</p>
 
-          <p class="stock-change stock-change--${stockQuote.changeDirection}">
-            ${stockQuote.change.toFixed(2)}
-            (${stockQuote.changePercent.toFixed(2)}%)
+          <p class="asset-change asset-change--${stockQuote.changeDirection}">
+            <span class="asset-change-value">
+              ${stockQuote.change.toFixed(2)}
+            </span>
+            <span class="asset-change-percent">
+              (${stockQuote.changePercent.toFixed(2)}%)
+            </span>
           </p>
         </article>
       `
@@ -84,4 +93,48 @@ export function renderStockSearchResults(results) {
     .join('');
 
   dom.stockSearchResults.classList.remove('hidden');
+}
+
+export function renderMetalsList(metals) {
+  if (!metals || metals.length === 0) {
+    dom.metalsList.innerHTML = '<p class="empty-state">Metal prices will appear here.</p>';
+    return;
+  }
+
+  dom.metalsList.innerHTML = metals
+    .map(
+      (metal) => `
+        <article class="asset-card metal-card">
+          <div class="asset-card-header">
+            <h3>${metal.symbol}</h3>
+            <p class="asset-price">$${metal.price.toFixed(2)}</p>
+          </div>
+
+          <p class="asset-name">${metal.name}</p>
+
+          <div class="asset-change asset-change--${metal.changeDirection}">
+            <span class="asset-change-value">
+              ${metal.change.toFixed(2)}
+            </span>
+            <span class="asset-change-percent">
+              (${metal.changePercent.toFixed(2)}%)
+            </span>
+          </div>
+        </article>
+      `
+    )
+    .join('');
+}
+
+export function renderStocksUpdatedMeta(timestamp) {
+  dom.stocksUpdatedMeta.textContent = formatLastUpdated(timestamp);
+}
+
+export function renderMetalsUpdatedMeta(timestamp) {
+  dom.metalsUpdatedMeta.textContent = formatLastUpdated(timestamp);
+}
+
+export function renderMetalsSection(metalsPrices, metalsDate) {
+  renderMetalsList(metalsPrices);
+  renderMetalsUpdatedMeta(metalsDate);
 }

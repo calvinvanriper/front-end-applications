@@ -19,7 +19,7 @@
       <section class="dashboard-card currency-converter-card">
         <div class="card-header">
           <div>
-            <p class="eyebrow">Currency Tools</p>
+            <p class="eyebrow eyebrow--currency">Currency Tools</p>
             <h2>Currency Converter</h2>
           </div>
           <p class="card-description">Convert between currencies using live exchange rate data.</p>
@@ -66,8 +66,11 @@
         >
           <div class="card-header">
             <div>
-              <p class="eyebrow">Market Watch</p>
-              <h2 id="stock-watchlist-title">Stock Watchlist</h2>
+              <p class="eyebrow eyebrow--stocks">Market Watch</p>
+              <h2 id="stock-watchlist-title">Stocks</h2>
+              <p class="card-meta stocks-meta">
+                Last refreshed: <span id="stocks-updated-meta">Not updated yet</span>
+              </p>
             </div>
           </div>
 
@@ -103,8 +106,30 @@
             </div>
           </form>
 
-          <div class="stock-watchlist" id="stock-watchlist">
+          <div class="stock-watchlist asset-grid" id="stock-watchlist">
             <p class="empty-state">No stocks added yet.</p>
+          </div>
+        </section>
+
+        <section class="dashboard-card metals-tracker-card" aria-labelledby="metals-tracker-title">
+          <div class="card-header">
+            <div>
+              <p class="eyebrow eyebrow--metals">Market Watch</p>
+              <h2 id="metals-tracker-title">Metals</h2>
+              <p class="card-meta metals-meta">
+                Last updated: <span id="metals-updated-meta">Not updated yet</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="metals-actions">
+            <button class="btn btn--secondary" id="refresh-metals-btn" type="button">
+              Refresh
+            </button>
+          </div>
+
+          <div class="metals-list asset-grid" id="metals-list">
+            <p class="empty-state">Metal prices will appear here.</p>
           </div>
         </section>
       </section>

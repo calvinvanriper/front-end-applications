@@ -44,3 +44,30 @@ export function formatCurrencyOptionLabel(currencyCode) {
 
   return `${currencyCode} - ${symbol} ${name}`;
 }
+
+export function formatLastUpdated(timestamp) {
+  if (!timestamp) return 'Not updated yet';
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
+    .format(new Date(timestamp))
+    .replace(',', ' •');
+}
+
+export function getLatestStockTimestamp(stocks) {
+  if (!stocks || stocks.length === 0) return null;
+
+  return stocks.reduce((latest, stock) => {
+    if (!latest) return stock.lastUpdated;
+
+    const latestTime = new Date(latest).getTime();
+    const currentTime = new Date(stock.lastUpdated).getTime();
+
+    return currentTime > latestTime ? stock.lastUpdated : latest;
+  }, null);
+}
