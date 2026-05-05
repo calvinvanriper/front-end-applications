@@ -1,19 +1,20 @@
-# Personal Finance Dashboard - Phase 1 MVP
+# Personal Finance Dashboard — Phase 2 MVP (Complete)
 
-> Phase 1 MVP complete - includes Stock Watchlist and Currency Converter modules
+> Phase 2 MVP complete — includes Stock Watchlist, Currency Converter, and Precious Metals Tracker
+
+---
 
 ## 📝 Overview
 
 The Personal Finance Dashboard is a modular, state-driven front-end application that provides tools for tracking financial data and performing real-time conversions.
 
-Phase 1 includes two core features:
+The application has evolved into a multi-feature financial dashboard with three core modules:
 
-- **Stock Watchlist** — track real-time stock prices with autocomplete search and resilient data refresh
-- **Currency Converter** — convert between currencies using live exchange rates with dynamic dropdowns and quick-swap functionality
+- **Stock Watchlist** — track real-time stock prices with autocomplete search and resilient refresh handling
+- **Currency Converter** — convert between currencies using live exchange rates
+- **Precious Metals Tracker** — monitor gold, silver, platinum, and palladium prices with intelligent caching
 
-The application emphasizes clean architecture, resilient API integration, and predictable state management while delivering a smooth and intuitive user experience.
-
-The application is designed to evolve into a multi-tool financial Dashboard, with each phase expanding functionality while maintaining a consistent architecture and user experience.
+The application emphasizes clean architecture, resilient API integration, and predictable state management while delivering a cohesive, dashboard-style user experience.
 
 ---
 
@@ -24,7 +25,7 @@ The application is designed to evolve into a multi-tool financial Dashboard, wit
 - Add stocks via:
   - Symbol input
   - Autocomplete search (symbol + company name)
-- Remove individual stocks with confirmation
+- Remove individual stocks
 - Clear entire watchlist with confirmation modal
 - Refresh all stock data using live API calls
 - Resilient refresh handling using `Promise.allSettled()`
@@ -33,6 +34,28 @@ The application is designed to evolve into a multi-tool financial Dashboard, wit
   - Price change
   - Percent change
 - Visual indicators for price movement
+- Section-level **Last refreshed timestamp**
+- Persistent storage using `localStorage`
+
+---
+
+### 🪙 Precious Metals Tracker
+
+- Track key metals:
+  - Gold (XAU)
+  - Silver (XAG)
+  - Platinum (XPT)
+  - Palladium (XPD)
+- Live pricing via API integration
+- Calculated:
+  - Price change
+  - Percent change (based on previous fetch)
+- Intelligent caching system:
+  - Stores previous and current prices
+  - Prevents unnecessary API calls
+- **8-hour cooldown** to respect API rate limits
+- Automatic fallback to cached data on API failure
+- Section-level **Last refreshed timestamp**
 - Persistent storage using `localStorage`
 
 ---
@@ -54,6 +77,8 @@ The application is designed to evolve into a multi-tool financial Dashboard, wit
 - Confirmation modals for destructive actions
 - Inline validation messaging
 - Responsive, scan-friendly card layout
+- Consistent **asset-card design system** across dashboard modules
+- Section-level metadata (Last refreshed timestamps)
 
 ---
 
@@ -68,14 +93,12 @@ The application follows a modular structure with clear separation of concerns:
 
 - **State**
   - Centralized UI state via `appState`
-  - Handles confirmation flows and pending actions
+  - Handles transient UI flows (modals, confirmations)
 
 - **Workflows**
   - Encapsulate business logic for:
-    - adding stocks
-    - removing stocks
-    - clearing watchlist
-    - refreshing stock data
+    - stock operations (add/remove/refresh)
+    - metals refresh + caching
     - currency conversion
   - Return standardized result objects:
 
@@ -86,21 +109,23 @@ The application follows a modular structure with clear separation of concerns:
 - **API Layer**
   - Integrates external services for:
     - stock quotes and symbol search
-    - currency exchange rates and supported currencies
+    - currency exchange rates
+    - precious metals pricing
   - Normalizes external data into a consistent internal format
+
+- **Storage Layer**
+  - `localStorage` used for:
+    - stock watchlist persistence
+    - metals cache (current + previous prices + timestamps)
 
 - **UI Layer**
   - Rendering logic isolated from business logic
-  - DOM updates driven by application state
+  - Shared rendering patterns for asset-based data
 
 - **Handlers**
   - Event listeners call named functions
   - No business logic inside event listeners
-  - Responsible for UI-side effects, such as toast notifications
-
-- **Multi-Feature Design**
-  - Dashboard supports multiple financial tools within a shared architecture
-  - Each feature module follows consistent workflow and UI patterns
+  - Responsible for UI-side effects (toasts, UI state updates)
 
 ---
 
@@ -115,16 +140,21 @@ The application follows a modular structure with clear separation of concerns:
 
 ---
 
-## 🔄 Resilient Data Refresh
+## 🔄 Data Handling & Resilience
 
-- Uses `Promise.allSettled()` to handle multiple API calls
+### Stocks
+
+- Uses `Promise.allSettled()` for batch refresh
 - Ensures:
   - successful updates are applied
   - failed updates do not remove existing data
-- Provides user feedback for:
-  - full success
-  - partial refresh
-  - total failure
+
+### Metals
+
+- Uses cached data with cooldown system
+- Prevents unnecessary API calls
+- Falls back to cached data on failure
+- Calculates change based on previous fetch
 
 ---
 
@@ -148,16 +178,17 @@ personal-finance-dashboard/
     workflows/
 ```
 
-The structure separates responsibilities into focused modules, improving maintainability and scalability.
-
 ---
 
 ## 💾 Persistence & Data Handling
 
-- Watchlist is stored in `localStorage`
-- Data is rehydrated on application load
-- Model ensures consistent data structure across sessions
-- UI always reflects current state of the model
+- Stock watchlist stored in `localStorage`
+- Metals cache stored with:
+  - last fetched timestamp
+  - previous prices
+  - current prices
+- Data rehydrated on application load
+- UI always reflects current data state
 
 ---
 
@@ -165,11 +196,12 @@ The structure separates responsibilities into focused modules, improving maintai
 
 - Vanilla JavaScript (ES Modules)
 - HTML5
-- CSS3 (custom properties / design tokens)
+- CSS3 (design tokens / custom properties)
 - LocalStorage API
 - External APIs:
   - Finnhub (stock data + symbol search)
-  - Currency exchange API (rates + supported currencies)
+  - Currency exchange API
+  - MetalpriceAPI (precious metals)
 
 ---
 
@@ -177,33 +209,39 @@ The structure separates responsibilities into focused modules, improving maintai
 
 - Application is fully state-driven for consistent UI behavior
 - Workflows return standardized result objects for predictable handling
-- Toast notifications are centrally managed via `showResultToast()`
-- Autocomplete separates:
-  - identity (symbol + name)
-  - live data (price + change)
-- Currency converter dynamically loads supported currencies from API at runtime
-- Shared UI systems (modals, toasts) are reused across multiple features
-- Application structured to support additional financial modules in future phases
+- Toast notifications managed via `showResultToast()`
+- Asset-based UI system allows reuse across financial data types
+- Metals tracker introduces:
+  - caching
+  - cooldown strategy
+  - derived data (change calculations)
+- Application structured for scalable feature expansion
 
 ---
 
 ## 🚧 Roadmap
 
-### Phase 2 (Next)
+### Phase 2.5 — Currency Tracker (Next)
 
-- Precious metals price tracker
-- Optional saved metals preferences
-- Manual refresh controls for metal pricing
+- Track selected currencies (up to 4)
+- Base conversion standardized to $100 USD
+- Add/remove currencies via autocomplete input
+- Refresh button with API integration
+- Cache + cooldown system
+- LocalStorage persistence
+- Reuse asset-card UI system
 
 ---
 
-### Phase 3 (Future Development)
+### Phase 3 — Financial Planning Tools
 
 - Savings goal tracker
 - Asset allocation tracker
-- Pie or donut chart showing asset allocation breakdown
-- LocalStorage persistence for goals and allocation data
-- JSON import/export of Phase 3 data
+- Pie or donut chart for allocation breakdown
+- LocalStorage persistence for planning data
+- JSON import/export support
+
+---
 
 ## 🔗 Live Demo
 
