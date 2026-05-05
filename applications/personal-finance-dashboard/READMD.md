@@ -1,6 +1,6 @@
 # Personal Finance Dashboard — Phase 2 MVP (Complete)
 
-> Phase 2 MVP complete — includes Stock Watchlist, Currency Converter, and Precious Metals Tracker
+> Phase 2 MVP complete — includes Stock Watchlist, Currency Converter, Precious Metals Tracker, and Currency Watchlist
 
 ---
 
@@ -8,10 +8,11 @@
 
 The Personal Finance Dashboard is a modular, state-driven front-end application that provides tools for tracking financial data and performing real-time conversions.
 
-The application has evolved into a multi-feature financial dashboard with three core modules:
+The application has evolved into a multi-feature financial dashboard with four core modules:
 
 - **Stock Watchlist** — track real-time stock prices with autocomplete search and resilient refresh handling
 - **Currency Converter** — convert between currencies using live exchange rates
+- **Currency Watchlist** — track selected currencies with change and percent calculations
 - **Precious Metals Tracker** — monitor gold, silver, platinum, and palladium prices with intelligent caching
 
 The application emphasizes clean architecture, resilient API integration, and predictable state management while delivering a cohesive, dashboard-style user experience.
@@ -25,7 +26,7 @@ The application emphasizes clean architecture, resilient API integration, and pr
 - Add stocks via:
   - Symbol input
   - Autocomplete search (symbol + company name)
-- Remove individual stocks
+- Remove individual stocks with confirmation modal
 - Clear entire watchlist with confirmation modal
 - Refresh all stock data using live API calls
 - Resilient refresh handling using `Promise.allSettled()`
@@ -71,6 +72,26 @@ The application emphasizes clean architecture, resilient API integration, and pr
 
 ---
 
+### 💱 Currency Watchlist
+
+- Add currencies from successful conversions
+- Maximum of 4 tracked currencies
+- Prevent duplicate entries
+- Remove individual currencies with confirmation modal
+- Clear entire watchlist with confirmation modal
+- Refresh all tracked currencies using a single API request
+- Base conversion standardized to **$100 USD**
+- Calculated:
+  - Value change
+  - Percent change (based on previous refresh)
+- Rates caching system:
+  - Stores current and previous rates
+  - Enables change tracking without redundant API calls
+- Section-level **Last refreshed timestamp**
+- Persistent storage using `localStorage`
+
+---
+
 ### 🔔 UI & UX Systems
 
 - Toast notifications for user feedback
@@ -89,7 +110,8 @@ The application follows a modular structure with clear separation of concerns:
 ### Core Layers
 
 - **Models**
-  - `StockWatchList` — manages watchlist state and operations
+  - `StockWatchlist` — manages stock watchlist state and operations
+  - `CurrencyWatchlist` — manages tracked currencies
 
 - **State**
   - Centralized UI state via `appState`
@@ -100,6 +122,7 @@ The application follows a modular structure with clear separation of concerns:
     - stock operations (add/remove/refresh)
     - metals refresh + caching
     - currency conversion
+    - currency watchlist operations (add/remove/clear/refresh + caching)
   - Return standardized result objects:
 
 ```js
@@ -116,6 +139,8 @@ The application follows a modular structure with clear separation of concerns:
 - **Storage Layer**
   - `localStorage` used for:
     - stock watchlist persistence
+    - currency watchlist persistence
+    - currency rates cache (current + previous rates + timestamps)
     - metals cache (current + previous prices + timestamps)
 
 - **UI Layer**
@@ -156,6 +181,17 @@ The application follows a modular structure with clear separation of concerns:
 - Falls back to cached data on failure
 - Calculates change based on previous fetch
 
+### Currencies
+
+- Uses a single API call to fetch all rates
+- Stores:
+  - current rates
+  - previous rates
+- Enables:
+  - change calculations
+  - percent change calculations
+- Avoids redundant API calls during removal operations
+
 ---
 
 ## 🧩 Application Structure
@@ -183,6 +219,11 @@ personal-finance-dashboard/
 ## 💾 Persistence & Data Handling
 
 - Stock watchlist stored in `localStorage`
+- Currency watchlist stored in `localStorage`
+- Currency rates cache stored with:
+  - last fetched timestamp
+  - previous rates
+  - current rates
 - Metals cache stored with:
   - last fetched timestamp
   - previous prices
@@ -211,27 +252,14 @@ personal-finance-dashboard/
 - Workflows return standardized result objects for predictable handling
 - Toast notifications managed via `showResultToast()`
 - Asset-based UI system allows reuse across financial data types
-- Metals tracker introduces:
-  - caching
-  - cooldown strategy
-  - derived data (change calculations)
+- Currency and metals modules introduce:
+  - caching strategies
+  - derived data (change + percent calculations)
 - Application structured for scalable feature expansion
 
 ---
 
 ## 🚧 Roadmap
-
-### Phase 2.5 — Currency Tracker (Next)
-
-- Track selected currencies (up to 4)
-- Base conversion standardized to $100 USD
-- Add/remove currencies via autocomplete input
-- Refresh button with API integration
-- Cache + cooldown system
-- LocalStorage persistence
-- Reuse asset-card UI system
-
----
 
 ### Phase 3 — Financial Planning Tools
 
