@@ -1,0 +1,56 @@
+/* -------------------OVERLAY / MODAL SHELL---------------------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--black-a50);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+
+  z-index: 1000;
+}
+
+/* ------------------------MODAL CONTENT------------------------- */
+
+.modal-content {
+  width: min(90%, 420px);
+
+  padding: 1.25rem;
+  border-radius: var(--radius-xl);
+
+  background: var(--bg-alt-surface);
+  border: var(--border-subtle);
+  box-shadow: var(--shadow-soft);
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  animation: modalFadeIn 0.2s ease;
+}
+
+/* ------------------------MODAL ACTIONS------------------------- */
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+/* ----------------------MODAL ANIMATIONS------------------------ */
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

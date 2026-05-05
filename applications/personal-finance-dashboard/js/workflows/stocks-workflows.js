@@ -38,7 +38,7 @@ export async function processStockLookup(stockWatchlist) {
   }
 }
 
-export function processStockRemoval(stockWatchlist, symbol) {
+export async function processStockRemoval(stockWatchlist, symbol) {
   if (!symbol) {
     console.error('Missing symbol in remove workflow');
     return { success: false, reason: 'stockRemovalFailed' };

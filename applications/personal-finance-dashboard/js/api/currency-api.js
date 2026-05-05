@@ -1,4 +1,5 @@
 import { BASE_URL } from '../config/api-config.js';
+import { BASE_CURRENCY } from '../config/constants.js';
 
 export async function getCurrencyConversion(amount, fromCurrency, toCurrency) {
   const response = await fetch(`${BASE_URL}/${fromCurrency}`);
@@ -24,14 +25,26 @@ export async function getCurrencyConversion(amount, fromCurrency, toCurrency) {
   };
 }
 
-export async function getSupportedCurrencies(base = 'USD') {
-  const response = await fetch(`${BASE_URL}/${base}`);
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch supported currencies');
-  }
-
-  const data = await response.json();
+export async function getSupportedCurrencies(base = BASE_CURRENCY) {
+  const data = await fetchCurrencyData(base);
 
   return Object.keys(data.rates);
+}
+
+export async function getCurrencyRates(base = BASE_CURRENCY) {
+  const data = await fetchCurrencyData(base);
+
+  return {
+    base,
+    rates: data.rates,
+    date: data.time_last_update_utc,
+  };
+}
+
+async function fetchCurrencyData(base) {
+  const response = await fetch(`${BASE_URL}/${base}`);
+
+  if (!response.ok) throw new Error('Unable to fetch currency data.');
+
+  return response.json();
 }

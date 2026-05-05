@@ -1,8 +1,8 @@
-import { stockMessages } from '../config/constants.js';
+import { toastMessages } from '../config/constants.js';
 import { dom } from './dom.js';
 
 function showToast(messageType, messageKey) {
-  const message = stockMessages[messageType]?.[messageKey];
+  const message = toastMessages[messageType]?.[messageKey];
 
   if (!message) return;
 

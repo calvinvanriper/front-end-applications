@@ -1,0 +1,13 @@
+.stock-watchlist {
+  margin-top: 1.5rem;
+}
+
+.stock-card {
+  background: var(--surface-muted);
+  border-color: var(--accent-blue-focus);
+  box-shadow: var(--shadow-soft);
+}
+
+.stock-card:hover {
+  background: var(--blue-600-a15);
+}

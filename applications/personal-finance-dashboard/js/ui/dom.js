@@ -7,7 +7,7 @@ export const dom = {
   convertCurrencyBtn: document.getElementById('convert-currency-btn'),
   converterForm: document.getElementById('converter-form'),
   swapBtn: document.getElementById('swap-btn'),
-  stockWatchList: document.getElementById('stock-watchlist'),
+  stockWatchlist: document.getElementById('stock-watchlist'),
   stockSymbolInput: document.getElementById('stock-symbol'),
   stockForm: document.getElementById('stock-form'),
   cancelConfirmationBtn: document.getElementById('cancel-confirmation-btn'),
@@ -23,4 +23,9 @@ export const dom = {
   refreshMetalsBtn: document.getElementById('refresh-metals-btn'),
   stocksUpdatedMeta: document.getElementById('stocks-updated-meta'),
   metalsUpdatedMeta: document.getElementById('metals-updated-meta'),
+  addCurrencyBtn: document.getElementById('add-currency-btn'),
+  currencyUpdatedMeta: document.getElementById('currency-updated-meta'),
+  currencyWatchlist: document.getElementById('currency-watchlist'),
+  refreshCurrenciesBtn: document.getElementById('refresh-currencies-btn'),
+  clearCurrenciesBtn: document.getElementById('clear-currencies-btn'),
 };

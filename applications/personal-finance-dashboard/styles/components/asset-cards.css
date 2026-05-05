@@ -1,0 +1,91 @@
+/* -----------------------ASSET CARD BASE------------------------ */
+
+.asset-card {
+  position: relative;
+  padding: 1rem;
+  border: var(--border-subtle);
+  border-radius: var(--radius-xl);
+  transition: background 0.2s ease;
+}
+
+.asset-card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding-right: 1.1rem;
+}
+
+.asset-card h3 {
+  margin: 0;
+}
+
+/* ------------------ASSET CARD META AND LAYOUT------------------ */
+
+.card-meta {
+  margin: 0.15rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+.card-meta span {
+  color: var(--text-primary);
+}
+
+.asset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.asset-name {
+  margin: 0.35rem 0 0;
+  text-align: center;
+  font-size: 0.85rem;
+
+  color: var(--text-secondary);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asset-price {
+  margin: 0;
+  margin-left: auto;
+
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.asset-change {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5rem;
+  font-weight: 700;
+}
+
+/* ---------------------ASSET STATE STYLES----------------------- */
+
+.asset-change--positive {
+  color: var(--positive);
+}
+
+.asset-change--negative {
+  color: var(--negative);
+}
+
+.asset-change--neutral {
+  color: var(--text-secondary);
+}
+
+/* ----------------------ASSET CARD ACTIONS---------------------- */
+
+.asset-card-actions {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+
+  display: flex;
+  gap: 0.35rem;
+}

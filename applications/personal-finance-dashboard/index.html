@@ -16,50 +16,87 @@
     </header>
 
     <main class="page">
-      <section class="dashboard-card currency-converter-card">
-        <div class="card-header">
-          <div>
-            <p class="eyebrow eyebrow--currency">Currency Tools</p>
-            <h2>Currency Converter</h2>
-          </div>
-          <p class="card-description">Convert between currencies using live exchange rate data.</p>
-        </div>
-
-        <form class="converter-form" id="converter-form">
-          <div class="form-field">
-            <label for="amount">Amount</label>
-            <input id="amount" type="number" min="0" step="0.01" placeholder="100.00" />
-          </div>
-
-          <div class="form-field">
-            <label for="from-currency">From</label>
-            <select id="from-currency">
-              <option value="USD">USD</option>
-            </select>
-          </div>
-
-          <button class="swap-btn" id="swap-btn" type="button" aria-label="Swap currencies">
-            ⇄
-          </button>
-
-          <div class="form-field">
-            <label for="to-currency">To</label>
-            <select id="to-currency">
-              <option value="EUR">EUR</option>
-            </select>
-          </div>
-
-          <button class="btn btn--primary" id="convert-currency-btn" type="submit">Convert</button>
-        </form>
-
-        <div class="converter-result">
-          <p class="result-label">Converted Amount</p>
-          <p class="result-value" id="result-value">$0.00</p>
-          <p class="result-meta" id="result-meta">Rate data will appear after conversion.</p>
-        </div>
-      </section>
-
       <section class="dashboard-grid">
+        <section class="dashboard-card currency-converter-card">
+          <div class="card-header">
+            <div>
+              <p class="eyebrow eyebrow--currency">Currency Tools</p>
+              <h2>Currency Converter</h2>
+            </div>
+            <p class="card-description">
+              Convert between currencies using live exchange rate data.
+            </p>
+          </div>
+
+          <form class="converter-form" id="converter-form">
+            <div class="form-field">
+              <label for="amount">Amount</label>
+              <input id="amount" type="number" min="0" step="0.01" placeholder="100.00" />
+            </div>
+
+            <div class="converter-currency-row">
+              <div class="form-field">
+                <label for="from-currency">From</label>
+                <select id="from-currency">
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+
+              <button class="swap-btn" id="swap-btn" type="button" aria-label="Swap currencies">
+                ⇄
+              </button>
+
+              <div class="form-field">
+                <label for="to-currency">To</label>
+                <select id="to-currency">
+                  <option value="EUR">EUR</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="converter-actions">
+              <button class="btn btn--primary" id="convert-currency-btn" type="submit">
+                Convert
+              </button>
+              <button class="btn btn--secondary" id="add-currency-btn" type="button" disabled>
+                Add to Watchlist
+              </button>
+            </div>
+          </form>
+
+          <div class="converter-result">
+            <p class="result-label">Converted Amount</p>
+            <p class="result-value" id="result-value">$0.00</p>
+            <p class="result-meta" id="result-meta">Rate data will appear after conversion.</p>
+          </div>
+        </section>
+
+        <section
+          class="dashboard-card currency-watchlist-card"
+          aria-labelledby="currency-watchlist-title"
+        >
+          <div class="card-header">
+            <div>
+              <p class="eyebrow eyebrow--currency">Market Watch</p>
+              <h2 id="currency-watchlist-title">Currencies</h2>
+              <p class="card-meta currency-watchlist-meta">
+                Last updated: <span id="currency-updated-meta">Not updated yet</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="currency-watchlist-actions">
+            <button class="btn btn--secondary" id="refresh-currencies-btn" type="button">
+              Refresh
+            </button>
+            <button class="btn btn--danger" id="clear-currencies-btn" type="button">Clear</button>
+          </div>
+
+          <div class="currency-watchlist asset-grid" id="currency-watchlist">
+            <p class="empty-state">No currencies added yet.</p>
+          </div>
+        </section>
+
         <section
           class="dashboard-card stock-watchlist-card"
           aria-labelledby="stock-watchlist-title"

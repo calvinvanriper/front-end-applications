@@ -1,0 +1,18 @@
+.converter-result {
+  padding: 1rem;
+  background: var(--surface-muted);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-outline-subtle);
+}
+
+.result-label,
+.result-meta {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.result-value {
+  margin: 0.25rem 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 800;
+}

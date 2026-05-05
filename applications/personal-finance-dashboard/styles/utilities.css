@@ -1,0 +1,11 @@
+.hidden {
+  display: none;
+}
+
+.warning {
+  color: var(--danger);
+}
+
+.placeholder-text {
+  color: var(--text-secondary);
+}

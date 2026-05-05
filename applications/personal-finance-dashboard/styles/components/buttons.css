@@ -1,0 +1,126 @@
+/* ------------------------BUTTON SYSTEM------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 42px;
+  padding: 0.55rem 0.9rem;
+
+  font: inherit;
+  font-weight: 700;
+
+  border: var(--border-transparent);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+
+  transition:
+    transform 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0px);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --------------------PRIMARY BUTTON FAMILY--------------------- */
+
+.btn--primary {
+  color: var(--text-inverse);
+  background-color: var(--accent-blue);
+  border-color: var(--accent-blue-hover);
+}
+
+.btn--primary:hover {
+  background-color: var(--accent-blue-hover);
+}
+
+.btn--secondary {
+  color: var(--text-inverse);
+  background-color: var(--success-action);
+  border-color: var(--success-action-hover);
+}
+
+.btn--secondary:hover {
+  background-color: var(--success-action-hover);
+}
+
+.btn--danger {
+  color: var(--text-inverse);
+  background-color: var(--danger);
+  border-color: var(--danger-hover);
+}
+
+.btn--danger:hover {
+  background-color: var(--danger-hover);
+}
+
+/* ------------------LIGHTWEIGHT BUTTON FAMILY------------------- */
+
+.swap-btn {
+  width: 42px;
+  min-width: 42px;
+  min-height: 42px;
+  padding: 0;
+
+  color: var(--text-primary);
+  background-color: var(--surface-muted);
+
+  border: var(--border-choice-pill);
+  border-radius: var(--radius-lg);
+
+  cursor: pointer;
+
+  transition:
+    transform 0.12s ease,
+    background-color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.swap-btn:hover {
+  background-color: var(--surface-hover, var(--bg-alt-surface));
+  transform: translateY(-1px);
+}
+
+.swap-btn:active {
+  transform: translateY(0px);
+}
+
+.remove-icon-btn {
+  display: inline-grid;
+  place-items: center;
+
+  width: 1.1rem;
+  height: 1.1rem;
+
+  color: var(--text-secondary);
+  background: var(--link-btn);
+
+  border: var(--border-choice-pill);
+  border-radius: var(--radius-sm);
+
+  cursor: pointer;
+}
+
+.remove-icon-btn:hover {
+  color: var(--text-primary);
+  background: var(--surface-hover);
+}
+
+.remove-icon-btn--danger:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+}

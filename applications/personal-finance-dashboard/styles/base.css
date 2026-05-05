@@ -1,0 +1,35 @@
+/* ------------------RESET / GLOBAL FOUNDATION------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------------------BASE ELEMENT STYLES---------------------- */
+
+html,
+body {
+  min-height: 100%;
+  background: var(--bg-primary);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at top left, var(--blue-850), transparent 32rem), var(--bg-primary);
+}
+
+header {
+  padding: 2rem 1rem 1;
+}

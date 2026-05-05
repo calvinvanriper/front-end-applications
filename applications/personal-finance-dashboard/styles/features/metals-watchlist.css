@@ -1,0 +1,17 @@
+.metals-list {
+  margin-top: 1.5rem;
+}
+
+.metal-card {
+  background: var(--surface-muted);
+  border-color: var(--accent-gold);
+  box-shadow: var(--shadow-soft);
+}
+
+.metal-card:hover {
+  background: var(--amber-300-a12);
+}
+
+.metals-meta {
+  margin-bottom: 0.75rem;
+}

@@ -33,17 +33,17 @@ export function populateCurrencyOptions(currencies) {
 
 export function renderStockWatchlist(stockQuotes) {
   if (stockQuotes.length === 0) {
-    dom.stockWatchList.innerHTML = '<p class="empty-state">No stocks added yet.</p>';
+    dom.stockWatchlist.innerHTML = '<p class="empty-state">No stocks added yet.</p>';
     return;
   }
 
-  dom.stockWatchList.innerHTML = stockQuotes
+  dom.stockWatchlist.innerHTML = stockQuotes
     .map(
       (stockQuote) => `
         <article class="asset-card stock-card" data-symbol="${stockQuote.symbol}">
           <div class="asset-card-actions">
             <button
-              class="stock-icon-btn stock-icon-btn--danger"
+              class="remove-icon-btn remove-icon-btn--danger"
               type="button"
               data-action="remove"
               data-symbol="${stockQuote.symbol}"
@@ -137,4 +137,61 @@ export function renderMetalsUpdatedMeta(timestamp) {
 export function renderMetalsSection(metalsPrices, metalsDate) {
   renderMetalsList(metalsPrices);
   renderMetalsUpdatedMeta(metalsDate);
+}
+
+export function renderCurrencyUpdatedMeta(timestamp) {
+  dom.currencyUpdatedMeta.textContent = formatLastUpdated(timestamp);
+}
+
+export function renderCurrencySection(currencyCards, currencyDate) {
+  renderCurrencyWatchlist(currencyCards);
+  renderCurrencyUpdatedMeta(currencyDate);
+}
+
+export function setAddCurrencyButtonState(isEnabled) {
+  dom.addCurrencyBtn.disabled = !isEnabled;
+}
+
+export function renderCurrencyWatchlist(currencies) {
+  if (!currencies || currencies.length === 0) {
+    dom.currencyWatchlist.innerHTML = '<p class="empty-state">No currencies added yet.</p>';
+    return;
+  }
+
+  const markup = currencies
+    .map((currency) => {
+      const currencyLabel = formatCurrencyOptionLabel(currency.code);
+      const formattedAmount = formatCurrency(currency.convertedAmount, currency.code);
+      const priceText = `$${currency.baseAmount} ${currency.baseCurrency} → ${formattedAmount} ${currency.code}`;
+
+      return `
+        <article class="asset-card currency-card">
+          <div class="asset-card-actions">
+            <button
+              class="remove-icon-btn remove-icon-btn--danger"
+              type="button"
+              data-action="remove"
+              data-symbol="${currency.code}"
+              aria-label="Remove ${currency.code}"
+            >
+              x
+            </button>
+          </div>
+
+          <div class="currency-card-header">
+            <p class="asset-price currency-price">${priceText}</p>
+          </div>
+
+          <p class="asset-name currency-name">${currencyLabel}</p>
+
+          <div class="asset-change asset-change--${currency.changeDirection} currency-change">
+            <span class="asset-change-value">${currency.change.toFixed(2)}</span>
+            <span class="asset-change-percent">(${currency.changePercent.toFixed(2)})</span>
+          </div>
+        </article>
+      `;
+    })
+    .join('');
+
+  dom.currencyWatchlist.innerHTML = markup;
 }

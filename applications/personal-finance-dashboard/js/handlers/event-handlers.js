@@ -6,6 +6,12 @@ import {
   processClearStockWatchlist,
   processRefreshStockWatchlist,
 } from '../workflows/stocks-workflows.js';
+import {
+  processCurrencyWatchlistAdd,
+  processCurrencyWatchlistRefresh,
+  processCurrencyWatchlistClear,
+  processCurrencyWatchlistRemove,
+} from '../workflows/currency-workflows.js';
 import { processRefreshMetals } from '../workflows/metals-workflows.js';
 import { showConfirmationModal, hideConfirmationModal } from '../ui/modals.js';
 import { appState } from '../state/app-state.js';
@@ -18,7 +24,10 @@ let stockSearchTimeout = null;
 
 export async function handleConvertSubmit() {
   event.preventDefault();
-  await processCurrencyConversion();
+
+  const result = await processCurrencyConversion();
+
+  showResultToast(result);
 }
 
 export async function handleCurrencySwap() {
@@ -42,39 +51,21 @@ export function handleStockSubmit(event, stockWatchList) {
 }
 
 export function handleStockWatchlistClick(event, stockWatchlist) {
-  const clickedButton = event.target.closest('[data-action]');
-
-  if (!clickedButton) return;
-
-  const { action, symbol } = clickedButton.dataset;
-
-  if (action === 'remove') {
-    appState.pendingConfirmationAction = () => {
-      const result = processStockRemoval(stockWatchlist, symbol);
-      showResultToast(result);
-    };
-
-    showConfirmationModal({
-      title: `Clear ${symbol}`,
-      message: `This will remove <strong class="warning">${symbol}</strong> from your watchlist.`,
-      confirmText: `Remove`,
-    });
-  }
+  handleWatchlistRemoveClick(event, stockWatchlist, processStockRemoval);
 }
 
 export function handleClearStockWatchlistClick(stockWatchlist) {
-  if (appState.pendingConfirmationAction) return;
-
-  appState.pendingConfirmationAction = () => {
-    const result = processClearStockWatchlist(stockWatchlist);
-    showResultToast(result);
-  };
-
-  showConfirmationModal({
-    title: 'Clear Watchlist?',
-    message: 'This will remove <strong class="warning">ALL</strong> stocks from your watchlist.',
-    confirmText: 'Clear List',
-  });
+  handleClearWatchlistConfirmation(
+    () => {
+      const result = processClearStockWatchlist(stockWatchlist);
+      showResultToast(result);
+    },
+    {
+      title: 'Clear Watchlist?',
+      message: 'This will remove <strong class="warning">ALL</strong> stocks from your watchlist.',
+      confirmText: 'Clear List',
+    }
+  );
 }
 
 export function handleConfirmActionClick() {
@@ -171,4 +162,68 @@ export async function handleRefreshMetalsClick() {
   }
 
   showResultToast(result);
+}
+
+export async function handleAddCurrencyClick(currencyWatchlist) {
+  const result = await processCurrencyWatchlistAdd(currencyWatchlist);
+
+  showResultToast(result);
+}
+
+export async function handleRefreshCurrenciesClick(currencyWatchlist) {
+  const result = await processCurrencyWatchlistRefresh(currencyWatchlist);
+
+  showResultToast(result);
+}
+
+export function handleClearCurrenciesClick(currencyWatchlist) {
+  handleClearWatchlistConfirmation(
+    () => {
+      const result = processCurrencyWatchlistClear(currencyWatchlist);
+      showResultToast(result);
+    },
+    {
+      title: 'Clear Currencies?',
+      message:
+        'This will remove <strong class="warning">ALL</strong> currencies from your watchlist.',
+      confirmText: 'Clear List',
+    }
+  );
+}
+
+export async function handleCurrencyWatchlistClick(event, currencyWatchlist) {
+  handleWatchlistRemoveClick(event, currencyWatchlist, processCurrencyWatchlistRemove);
+}
+
+function handleClearWatchlistConfirmation(onConfirm, modalConfig) {
+  if (appState.pendingConfirmationAction) return;
+
+  appState.pendingConfirmationAction = onConfirm;
+
+  showConfirmationModal(modalConfig);
+}
+
+function handleRemoveWatchlistItemConfirmation(onConfirm, symbol) {
+  if (appState.pendingConfirmationAction) return;
+
+  appState.pendingConfirmationAction = onConfirm;
+
+  showConfirmationModal({
+    title: `Remove ${symbol}?`,
+    message: `This will remove <strong class="danger">${symbol}</strong> from your watchlist.`,
+    confirmText: 'Remove',
+  });
+}
+
+function handleWatchlistRemoveClick(event, watchlist, removeWorkflow) {
+  const removeButton = event.target.closest('.remove-icon-btn');
+
+  if (!removeButton) return;
+
+  const { symbol } = removeButton.dataset;
+
+  handleRemoveWatchlistItemConfirmation(async () => {
+    const result = await removeWorkflow(watchlist, symbol);
+    showResultToast(result);
+  }, symbol);
 }

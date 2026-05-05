@@ -1,0 +1,28 @@
+/* ------------------LAYOUT COLLAPSE (≤ 760px)------------------- */
+
+@media (max-width: 760px) {
+  .card-header {
+    flex-direction: column;
+  }
+
+  .currency-converter-row {
+    grid-template-columns: 1fr;
+  }
+
+  .swap-btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ------------------LAYOUT COLLAPSE (≤ 560px)------------------- */
+
+@media (max-width: 560px) {
+  .converter-actions {
+    grid-template-columns: 1fr;
+  }
+}

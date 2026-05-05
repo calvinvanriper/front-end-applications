@@ -1,0 +1,162 @@
+/* ------------------------CONVERTER FORM------------------------ */
+
+.converter-form {
+  display: grid;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.converter-currency-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: end;
+}
+
+.converter-currency-row .form-field {
+  min-width: 0;
+}
+
+.converter-currency-row select {
+  width: 100%;
+  min-width: 0;
+}
+
+/* ---------------------SHARED FORM ELEMENTS--------------------- */
+
+.form-field {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.form-field label {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0.55rem 0.7rem;
+
+  color: var(--text-primary);
+  background: var(--bg-alt-surface);
+
+  border: var(--border-choice-pill);
+  border-radius: var(--radius-lg);
+}
+
+.form-field select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ----------------------CONVERTER ACTIONS----------------------- */
+
+.converter-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+.converter-actions .btn {
+  width: 100%;
+  min-height: 42px;
+}
+
+/* -------------------------STOCK FORM--------------------------- */
+
+.stock-form {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: var(--border-subtle);
+  border-radius: var(--radius-xl);
+  background: var(--surface-muted);
+  box-shadow: var(--shadow-soft);
+}
+
+.stock-form-row {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.stock-form-row input {
+  flex: 1;
+}
+
+.stock-search-field {
+  position: relative;
+  width: 100%;
+}
+
+.stock-search-field input {
+  width: 100%;
+}
+
+.stock-search-results {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  right: 0;
+  z-index: 2500;
+
+  max-height: 8rem;
+  overflow-y: auto;
+
+  padding: 0.4rem;
+  background: var(--bg-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-form);
+}
+
+.stock-search-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--radius-sm);
+
+  cursor: pointer;
+}
+
+.stock-search-item:hover {
+  background: var(--surface-hover);
+}
+
+.stock-search-item strong {
+  white-space: nowrap;
+}
+
+.stock-search-item span {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stock-form-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.stock-form-actions .btn {
+  width: 100%;
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.stock-form .form-field {
+  margin-bottom: 0;
+}
