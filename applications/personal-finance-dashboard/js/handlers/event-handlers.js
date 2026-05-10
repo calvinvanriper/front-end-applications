@@ -16,18 +16,19 @@ import { processRefreshMetals } from '../workflows/metals-workflows.js';
 import { showConfirmationModal, hideConfirmationModal } from '../ui/modals.js';
 import { appState } from '../state/app-state.js';
 import { searchStockSymbols } from '../api/stocks-api.js';
-import { renderStockSearchResults, renderStocksUpdatedMeta } from '../ui/render.js';
+import { renderStockSearchResults } from '../ui/render.js';
 import { showResultToast } from '../ui/notifications.js';
-import { getLatestStockTimestamp } from '../utils/formatters.js';
 
 let stockSearchTimeout = null;
 
-export async function handleConvertSubmit() {
+// ------------------------------------------------------------
+// ----------------Currency Converter Handlers-----------------
+// ------------------------------------------------------------
+
+export async function handleConvertSubmit(event) {
   event.preventDefault();
 
-  const result = await processCurrencyConversion();
-
-  showResultToast(result);
+  await handleCurrencyConversionResult();
 }
 
 export async function handleCurrencySwap() {
@@ -39,13 +40,17 @@ export async function handleCurrencySwap() {
   dom.fromCurrency.value = currentToCurrency;
   dom.toCurrency.value = currentFromCurrency;
 
-  await processCurrencyConversion();
+  await handleCurrencyConversionResult();
 }
 
-export function handleStockSubmit(event, stockWatchList) {
+// ------------------------------------------------------------
+// ------------------Stock Watchlist Handlers------------------
+// ------------------------------------------------------------
+
+export async function handleStockSubmit(event, stockWatchList) {
   event.preventDefault();
 
-  const result = processStockLookup(stockWatchList);
+  const result = await processStockLookup(stockWatchList);
 
   showResultToast(result);
 }
@@ -55,56 +60,18 @@ export function handleStockWatchlistClick(event, stockWatchlist) {
 }
 
 export function handleClearStockWatchlistClick(stockWatchlist) {
-  handleClearWatchlistConfirmation(
-    () => {
-      const result = processClearStockWatchlist(stockWatchlist);
-      showResultToast(result);
-    },
-    {
-      title: 'Clear Watchlist?',
-      message: 'This will remove <strong class="warning">ALL</strong> stocks from your watchlist.',
-      confirmText: 'Clear List',
-    }
-  );
-}
-
-export function handleConfirmActionClick() {
-  if (!appState.pendingConfirmationAction) return;
-
-  try {
-    if (appState.pendingConfirmationAction) {
-      appState.pendingConfirmationAction();
-    }
-  } finally {
-    appState.pendingConfirmationAction = null;
-    hideConfirmationModal();
-  }
-}
-
-export function handleCancelConfirmationClick() {
-  appState.pendingConfirmationAction = null;
-  hideConfirmationModal();
+  handleClearWatchlistConfirmation(() => {
+    const result = processClearStockWatchlist(stockWatchlist);
+    showResultToast(result);
+  }, 'Stocks');
 }
 
 export async function handleRefreshStockWatchlistClick(stockWatchlist) {
-  let result;
-  dom.refreshStocksBtn.disabled = true;
+  await handleRefreshAction(dom.refreshStocksBtn, async () => {
+    const result = await processRefreshStockWatchlist(stockWatchlist);
 
-  try {
-    result = await processRefreshStockWatchlist(stockWatchlist);
-  } catch (error) {
-    console.error(error);
-
-    result = {
-      success: false,
-      reason: 'stocksRefreshFailed',
-    };
-  } finally {
-    dom.refreshStocksBtn.disabled = false;
-  }
-
-  renderStocksUpdatedMeta(getLatestStockTimestamp(stockWatchlist.getStocks()));
-  showResultToast(result);
+    return result;
+  });
 }
 
 export function handleStockSymbolInput() {
@@ -143,26 +110,17 @@ export function handleStockSearchResultClick(event) {
   dom.stockSymbolInput.focus();
 }
 
+// ------------------------------------------------------------
+// ------------------Metals Tracker Handlers-------------------
+// ------------------------------------------------------------
+
 export async function handleRefreshMetalsClick() {
-  let result;
-
-  dom.refreshMetalsBtn.disabled = true;
-
-  try {
-    result = await processRefreshMetals();
-  } catch (error) {
-    console.error(error);
-
-    result = {
-      success: false,
-      reason: 'metalsRefreshFailed',
-    };
-  } finally {
-    dom.refreshMetalsBtn.disabled = false;
-  }
-
-  showResultToast(result);
+  await handleRefreshAction(dom.refreshMetalsBtn, processRefreshMetals);
 }
+
+// ------------------------------------------------------------
+// ----------------Currency Watchlist Handlers-----------------
+// ------------------------------------------------------------
 
 export async function handleAddCurrencyClick(currencyWatchlist) {
   const result = await processCurrencyWatchlistAdd(currencyWatchlist);
@@ -171,36 +129,74 @@ export async function handleAddCurrencyClick(currencyWatchlist) {
 }
 
 export async function handleRefreshCurrenciesClick(currencyWatchlist) {
-  const result = await processCurrencyWatchlistRefresh(currencyWatchlist);
+  await handleRefreshAction(dom.refreshCurrenciesBtn, () =>
+    processCurrencyWatchlistRefresh(currencyWatchlist)
+  );
+}
+
+export function handleClearCurrenciesClick(currencyWatchlist) {
+  handleClearWatchlistConfirmation(() => {
+    const result = processCurrencyWatchlistClear(currencyWatchlist);
+    showResultToast(result);
+  }, 'Currencies');
+}
+
+export function handleCurrencyWatchlistClick(event, currencyWatchlist) {
+  handleWatchlistRemoveClick(event, currencyWatchlist, processCurrencyWatchlistRemove);
+}
+
+// ------------------------------------------------------------
+// ----------------Confirmation Modal Handlers-----------------
+// ------------------------------------------------------------
+
+export function handleConfirmActionClick() {
+  if (!appState.pendingConfirmationAction) return;
+
+  try {
+    appState.pendingConfirmationAction();
+  } finally {
+    appState.pendingConfirmationAction = null;
+    hideConfirmationModal();
+  }
+}
+
+export function handleCancelConfirmationClick() {
+  appState.pendingConfirmationAction = null;
+  hideConfirmationModal();
+}
+
+// ------------------------------------------------------------
+// -----------------Internal Helper Functions------------------
+// ------------------------------------------------------------
+
+async function handleCurrencyConversionResult() {
+  const result = await processCurrencyConversion();
 
   showResultToast(result);
 }
 
-export function handleClearCurrenciesClick(currencyWatchlist) {
-  handleClearWatchlistConfirmation(
-    () => {
-      const result = processCurrencyWatchlistClear(currencyWatchlist);
-      showResultToast(result);
-    },
-    {
-      title: 'Clear Currencies?',
-      message:
-        'This will remove <strong class="warning">ALL</strong> currencies from your watchlist.',
-      confirmText: 'Clear List',
-    }
-  );
+async function handleRefreshAction(refreshButton, refreshWorkflow) {
+  refreshButton.disabled = true;
+
+  try {
+    const result = await refreshWorkflow();
+
+    showResultToast(result);
+  } finally {
+    refreshButton.disabled = false;
+  }
 }
 
-export async function handleCurrencyWatchlistClick(event, currencyWatchlist) {
-  handleWatchlistRemoveClick(event, currencyWatchlist, processCurrencyWatchlistRemove);
-}
-
-function handleClearWatchlistConfirmation(onConfirm, modalConfig) {
+function handleClearWatchlistConfirmation(onConfirm, itemLabel) {
   if (appState.pendingConfirmationAction) return;
 
   appState.pendingConfirmationAction = onConfirm;
 
-  showConfirmationModal(modalConfig);
+  showConfirmationModal({
+    title: `Clear ${itemLabel}?`,
+    message: `This will remove <strong class="warning">ALL</strong> ${itemLabel.toLowerCase()} from your watchlist.`,
+    confirmText: 'Clear List',
+  });
 }
 
 function handleRemoveWatchlistItemConfirmation(onConfirm, symbol) {

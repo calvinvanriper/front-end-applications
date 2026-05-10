@@ -36,7 +36,16 @@ export class CurrencyWatchlist {
   }
 
   removeCurrency(currencyCode) {
+    const originalLength = this.currencies.length;
+
     this.currencies = this.currencies.filter((code) => code !== currencyCode);
+
+    if (this.currencies.length === originalLength) {
+      return {
+        success: false,
+        reason: 'currencyNotFound',
+      };
+    }
 
     return {
       success: true,
@@ -45,6 +54,13 @@ export class CurrencyWatchlist {
   }
 
   clearCurrencies() {
+    if (this.currencies.length === 0) {
+      return {
+        success: false,
+        reason: 'emptyCurrencyWatchlist',
+      };
+    }
+
     this.currencies = [];
 
     return {

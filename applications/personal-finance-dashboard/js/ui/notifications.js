@@ -1,6 +1,9 @@
 import { toastMessages } from '../config/constants.js';
 import { dom } from './dom.js';
 
+const TOAST_DURATION_MS = 3000;
+const TOAST_EXIT_DURATION_MS = 300;
+
 function showToast(messageType, messageKey) {
   const message = toastMessages[messageType]?.[messageKey];
 
@@ -18,14 +21,14 @@ function showToast(messageType, messageKey) {
 
     setTimeout(() => {
       toast.remove();
-    }, 300);
-  }, 3000);
+    }, TOAST_EXIT_DURATION_MS);
+  }, TOAST_DURATION_MS);
 }
 
 export function showResultToast(result) {
   if (!result) return;
 
-  const messageType = result.success ? 'success' : 'errors';
+  const messageType = result.success ? 'success' : 'error';
 
   showToast(messageType, result.reason);
 }

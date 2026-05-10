@@ -1,11 +1,14 @@
+// ------------------------------------------------------------
+// --------------------------Imports---------------------------
+// ------------------------------------------------------------
+
 import { dom } from './ui/dom.js';
 import * as handlers from './handlers/event-handlers.js';
 import { getSupportedCurrencies } from './api/currency-api.js';
 import {
   populateCurrencyOptions,
-  renderStockWatchlist,
+  renderStocksSection,
   renderMetalsSection,
-  renderStocksUpdatedMeta,
   setAddCurrencyButtonState,
 } from './ui/render.js';
 import { StockWatchlist } from './models/stock-watchlist.js';
@@ -16,8 +19,18 @@ import {
   loadCurrencyWatchlist,
 } from './storage/persistence.js';
 import { appState } from './state/app-state.js';
-import { getLatestStockTimestamp } from './utils/formatters.js';
 import { processCurrencyWatchlistRefresh } from './workflows/currency-workflows.js';
+
+// ------------------------------------------------------------
+// -----------------------App Instances------------------------
+// ------------------------------------------------------------
+
+const stockWatchlist = new StockWatchlist();
+const currencyWatchlist = new CurrencyWatchlist(loadCurrencyWatchlist());
+
+// ------------------------------------------------------------
+// -----------------------Initialization-----------------------
+// ------------------------------------------------------------
 
 async function initializeApp() {
   const currencies = await getSupportedCurrencies();
@@ -32,13 +45,13 @@ async function initializeApp() {
 
   stockWatchlist.loadStocks(savedStocks);
   populateCurrencyOptions(currencies);
-  renderStockWatchlist(stockWatchlist.getStocks());
-  renderStocksUpdatedMeta(getLatestStockTimestamp(stockWatchlist.getStocks()));
+  renderStocksSection(stockWatchlist.getStocks());
   await processCurrencyWatchlistRefresh(currencyWatchlist);
 }
 
-const stockWatchlist = new StockWatchlist();
-const currencyWatchlist = new CurrencyWatchlist(loadCurrencyWatchlist());
+// ------------------------------------------------------------
+// -------------------Global Event Listeners-------------------
+// ------------------------------------------------------------
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && appState.pendingConfirmationAction) {
@@ -50,33 +63,47 @@ document.addEventListener('click', (event) => {
     dom.stockSearchResults.classList.add('hidden');
   }
 });
+
+// ------------------------------------------------------------
+// ----------------Currency Converter Listeners----------------
+// ------------------------------------------------------------
+
 dom.converterForm.addEventListener('submit', handlers.handleConvertSubmit);
-dom.stockForm.addEventListener('submit', (event) => {
-  handlers.handleStockSubmit(event, stockWatchlist);
-});
 dom.swapBtn.addEventListener('click', handlers.handleCurrencySwap);
 dom.addCurrencyBtn.addEventListener('click', () => {
   handlers.handleAddCurrencyClick(currencyWatchlist);
 });
+
+// ------------------------------------------------------------
+// -----------------Stock Watchlist Listeners------------------
+// ------------------------------------------------------------
+
+dom.stockForm.addEventListener('submit', (event) => {
+  handlers.handleStockSubmit(event, stockWatchlist);
+});
+
 dom.stockWatchlist.addEventListener('click', (event) => {
   handlers.handleStockWatchlistClick(event, stockWatchlist);
 });
 dom.clearStocksBtn.addEventListener('click', () => {
   handlers.handleClearStockWatchlistClick(stockWatchlist);
 });
-dom.confirmActionBtn.addEventListener('click', handlers.handleConfirmActionClick);
-dom.cancelConfirmationBtn.addEventListener('click', handlers.handleCancelConfirmationClick);
-dom.confirmationModal.addEventListener('click', (event) => {
-  if (event.target === dom.confirmationModal) {
-    handlers.handleCancelConfirmationClick();
-  }
-});
 dom.refreshStocksBtn.addEventListener('click', () => {
   handlers.handleRefreshStockWatchlistClick(stockWatchlist);
 });
 dom.stockSymbolInput.addEventListener('input', handlers.handleStockSymbolInput);
 dom.stockSearchResults.addEventListener('click', handlers.handleStockSearchResultClick);
+
+// ------------------------------------------------------------
+// ------------------Metals Tracker Listeners------------------
+// ------------------------------------------------------------
+
 dom.refreshMetalsBtn.addEventListener('click', handlers.handleRefreshMetalsClick);
+
+// ------------------------------------------------------------
+// ----------------Currency Watchlist Listeners----------------
+// ------------------------------------------------------------
+
 dom.refreshCurrenciesBtn.addEventListener('click', () => {
   handlers.handleRefreshCurrenciesClick(currencyWatchlist);
 });
@@ -86,5 +113,21 @@ dom.clearCurrenciesBtn.addEventListener('click', () => {
 dom.currencyWatchlist.addEventListener('click', (event) => {
   handlers.handleCurrencyWatchlistClick(event, currencyWatchlist);
 });
+
+// ------------------------------------------------------------
+// ----------------Confirmation Modal Listeners----------------
+// ------------------------------------------------------------
+
+dom.confirmActionBtn.addEventListener('click', handlers.handleConfirmActionClick);
+dom.cancelConfirmationBtn.addEventListener('click', handlers.handleCancelConfirmationClick);
+dom.confirmationModal.addEventListener('click', (event) => {
+  if (event.target === dom.confirmationModal) {
+    handlers.handleCancelConfirmationClick();
+  }
+});
+
+// ------------------------------------------------------------
+// -------------------------Start App--------------------------
+// ------------------------------------------------------------
 
 initializeApp();

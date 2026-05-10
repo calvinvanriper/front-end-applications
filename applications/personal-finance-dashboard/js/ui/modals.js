@@ -2,7 +2,10 @@ import { dom } from './dom.js';
 
 export function showConfirmationModal({ title, message, confirmText = 'Confirm' }) {
   dom.confirmationTitle.textContent = title;
+
+  // Intentionally uses innerHTML to support formatted confirmation text.
   dom.confirmationMessage.innerHTML = message;
+
   dom.confirmActionBtn.textContent = confirmText;
 
   dom.confirmationModal.classList.remove('hidden');

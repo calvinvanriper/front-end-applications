@@ -1,8 +1,8 @@
-import { BASE_URL } from '../config/api-config.js';
+import { CURRENCY_BASE_URL } from '../config/api-config.js';
 import { BASE_CURRENCY } from '../config/constants.js';
 
 export async function getCurrencyConversion(amount, fromCurrency, toCurrency) {
-  const response = await fetch(`${BASE_URL}/${fromCurrency}`);
+  const response = await fetch(`${CURRENCY_BASE_URL}/${fromCurrency}`);
 
   if (!response.ok) {
     throw new Error('Unable to fetch currency conversion.');
@@ -35,14 +35,14 @@ export async function getCurrencyRates(base = BASE_CURRENCY) {
   const data = await fetchCurrencyData(base);
 
   return {
-    base,
+    baseCurrency: base,
     rates: data.rates,
     date: data.time_last_update_utc,
   };
 }
 
 async function fetchCurrencyData(base) {
-  const response = await fetch(`${BASE_URL}/${base}`);
+  const response = await fetch(`${CURRENCY_BASE_URL}/${base}`);
 
   if (!response.ok) throw new Error('Unable to fetch currency data.');
 

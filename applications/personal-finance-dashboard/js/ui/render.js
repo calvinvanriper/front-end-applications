@@ -4,7 +4,12 @@ import {
   formatDateTime,
   formatCurrencyOptionLabel,
   formatLastUpdated,
+  getLatestStockTimestamp,
 } from '../utils/formatters.js';
+
+// ------------------------------------------------------------
+// ---------------------Currency Converter---------------------
+// ------------------------------------------------------------
 
 export function renderConversionResult(conversion) {
   dom.resultValue.textContent = formatCurrency(conversion.convertedAmount, conversion.toCurrency);
@@ -31,9 +36,23 @@ export function populateCurrencyOptions(currencies) {
   dom.toCurrency.value = 'EUR';
 }
 
-export function renderStockWatchlist(stockQuotes) {
+export function setAddCurrencyButtonState(isEnabled) {
+  dom.addCurrencyBtn.disabled = !isEnabled;
+}
+
+// ------------------------------------------------------------
+// ----------------------Stock Watchlist-----------------------
+// ------------------------------------------------------------
+
+export function renderStocksSection(stockQuotes) {
+  renderStockWatchlist(stockQuotes);
+  renderStocksUpdatedMeta(getLatestStockTimestamp(stockQuotes));
+  setClearStocksButtonState(stockQuotes.length > 0);
+}
+
+function renderStockWatchlist(stockQuotes) {
   if (stockQuotes.length === 0) {
-    dom.stockWatchlist.innerHTML = '<p class="empty-state">No stocks added yet.</p>';
+    renderEmptyState(dom.stockWatchlist, 'No stocks added yet.');
     return;
   }
 
@@ -41,17 +60,7 @@ export function renderStockWatchlist(stockQuotes) {
     .map(
       (stockQuote) => `
         <article class="asset-card stock-card" data-symbol="${stockQuote.symbol}">
-          <div class="asset-card-actions">
-            <button
-              class="remove-icon-btn remove-icon-btn--danger"
-              type="button"
-              data-action="remove"
-              data-symbol="${stockQuote.symbol}"
-              aria-label="Remove ${stockQuote.symbol}"
-            >
-              x
-            </button>
-          </div>
+          ${createRemoveButtonMarkup(stockQuote.symbol)}
 
           <div class="asset-card-header">
             <h3>${stockQuote.symbol}</h3>
@@ -60,14 +69,11 @@ export function renderStockWatchlist(stockQuotes) {
 
           <p class="asset-name">${stockQuote.name}</p>
 
-          <p class="asset-change asset-change--${stockQuote.changeDirection}">
-            <span class="asset-change-value">
-              ${stockQuote.change.toFixed(2)}
-            </span>
-            <span class="asset-change-percent">
-              (${stockQuote.changePercent.toFixed(2)}%)
-            </span>
-          </p>
+          ${createAssetChangeMarkup(
+            stockQuote.change,
+            stockQuote.changePercent,
+            stockQuote.changeDirection
+          )}
         </article>
       `
     )
@@ -95,9 +101,26 @@ export function renderStockSearchResults(results) {
   dom.stockSearchResults.classList.remove('hidden');
 }
 
-export function renderMetalsList(metals) {
+function renderStocksUpdatedMeta(timestamp) {
+  renderUpdatedMeta(dom.stocksUpdatedMeta, timestamp);
+}
+
+function setClearStocksButtonState(isEnabled) {
+  dom.clearStocksBtn.disabled = !isEnabled;
+}
+
+// ------------------------------------------------------------
+// -----------------------Metals Tracker-----------------------
+// ------------------------------------------------------------
+
+export function renderMetalsSection(metalsPrices, metalsDate) {
+  renderMetalsList(metalsPrices);
+  renderMetalsUpdatedMeta(metalsDate);
+}
+
+function renderMetalsList(metals) {
   if (!metals || metals.length === 0) {
-    dom.metalsList.innerHTML = '<p class="empty-state">Metal prices will appear here.</p>';
+    renderEmptyState(dom.metalsList, 'Metal prices will appear here.');
     return;
   }
 
@@ -112,49 +135,30 @@ export function renderMetalsList(metals) {
 
           <p class="asset-name">${metal.name}</p>
 
-          <div class="asset-change asset-change--${metal.changeDirection}">
-            <span class="asset-change-value">
-              ${metal.change.toFixed(2)}
-            </span>
-            <span class="asset-change-percent">
-              (${metal.changePercent.toFixed(2)}%)
-            </span>
-          </div>
+          ${createAssetChangeMarkup(metal.change, metal.changePercent, metal.changeDirection)}
         </article>
       `
     )
     .join('');
 }
 
-export function renderStocksUpdatedMeta(timestamp) {
-  dom.stocksUpdatedMeta.textContent = formatLastUpdated(timestamp);
+function renderMetalsUpdatedMeta(timestamp) {
+  renderUpdatedMeta(dom.metalsUpdatedMeta, timestamp);
 }
 
-export function renderMetalsUpdatedMeta(timestamp) {
-  dom.metalsUpdatedMeta.textContent = formatLastUpdated(timestamp);
-}
-
-export function renderMetalsSection(metalsPrices, metalsDate) {
-  renderMetalsList(metalsPrices);
-  renderMetalsUpdatedMeta(metalsDate);
-}
-
-export function renderCurrencyUpdatedMeta(timestamp) {
-  dom.currencyUpdatedMeta.textContent = formatLastUpdated(timestamp);
-}
+// ------------------------------------------------------------
+// ---------------------Currency Watchlist---------------------
+// ------------------------------------------------------------
 
 export function renderCurrencySection(currencyCards, currencyDate) {
   renderCurrencyWatchlist(currencyCards);
   renderCurrencyUpdatedMeta(currencyDate);
+  setClearCurrenciesButtonState(currencyCards.length > 0);
 }
 
-export function setAddCurrencyButtonState(isEnabled) {
-  dom.addCurrencyBtn.disabled = !isEnabled;
-}
-
-export function renderCurrencyWatchlist(currencies) {
+function renderCurrencyWatchlist(currencies) {
   if (!currencies || currencies.length === 0) {
-    dom.currencyWatchlist.innerHTML = '<p class="empty-state">No currencies added yet.</p>';
+    renderEmptyState(dom.currencyWatchlist, 'No currencies added yet.');
     return;
   }
 
@@ -166,17 +170,7 @@ export function renderCurrencyWatchlist(currencies) {
 
       return `
         <article class="asset-card currency-card">
-          <div class="asset-card-actions">
-            <button
-              class="remove-icon-btn remove-icon-btn--danger"
-              type="button"
-              data-action="remove"
-              data-symbol="${currency.code}"
-              aria-label="Remove ${currency.code}"
-            >
-              x
-            </button>
-          </div>
+          ${createRemoveButtonMarkup(currency.code)}
 
           <div class="currency-card-header">
             <p class="asset-price currency-price">${priceText}</p>
@@ -184,14 +178,64 @@ export function renderCurrencyWatchlist(currencies) {
 
           <p class="asset-name currency-name">${currencyLabel}</p>
 
-          <div class="asset-change asset-change--${currency.changeDirection} currency-change">
-            <span class="asset-change-value">${currency.change.toFixed(2)}</span>
-            <span class="asset-change-percent">(${currency.changePercent.toFixed(2)})</span>
-          </div>
+          ${createAssetChangeMarkup(
+            currency.change,
+            currency.changePercent,
+            currency.changeDirection,
+            'currency-change'
+          )}
         </article>
       `;
     })
     .join('');
 
   dom.currencyWatchlist.innerHTML = markup;
+}
+
+function renderCurrencyUpdatedMeta(timestamp) {
+  renderUpdatedMeta(dom.currencyUpdatedMeta, timestamp);
+}
+
+function setClearCurrenciesButtonState(isEnabled) {
+  dom.clearCurrenciesBtn.disabled = !isEnabled;
+}
+
+// ------------------------------------------------------------
+// ----------------------Internal Helpers----------------------
+// ------------------------------------------------------------
+
+function renderUpdatedMeta(element, timestamp) {
+  element.textContent = formatLastUpdated(timestamp);
+}
+
+function renderEmptyState(container, message) {
+  container.innerHTML = `<p class="empty-state">${message}</p>`;
+}
+
+function createRemoveButtonMarkup(symbol) {
+  return `
+    <div class="asset-card-actions">
+      <button
+        class="remove-icon-btn remove-icon-btn--danger"
+        type="button"
+        data-symbol="${symbol}"
+        aria-label="Remove ${symbol}"
+      >
+        x
+      </button>
+    </div>
+  `;
+}
+
+function createAssetChangeMarkup(change, changePercent, changeDirection, extraClass = '') {
+  return `
+    <div class="asset-change asset-change--${changeDirection} ${extraClass}">
+      <span class="asset-change-value">
+        ${change.toFixed(2)}
+      </span>
+      <span class="asset-change-percent">
+        (${changePercent.toFixed(2)}%)
+      </span>
+    </div>
+  `;
 }

@@ -1,7 +1,15 @@
+// ------------------------------------------------------------
+// ------------------------Storage Keys------------------------
+// ------------------------------------------------------------
+
 const STOCK_WATCHLIST_KEY = 'personalFinanceDashboard.stockWatchlist';
 const METALS_CACHE_KEY = 'personalFinanceDashboard.metalsCache';
-const CURRENCY_WATCHLIST_STORAGE_KEY = 'personalFinanceDashboard.currencyWatchlist';
-const CURRENCY_RATES_CACHE_KEY = 'personalFinanceDashboard.currencyCache';
+const CURRENCY_WATCHLIST_KEY = 'personalFinanceDashboard.currencyWatchlist';
+const CURRENCY_CACHE_KEY = 'personalFinanceDashboard.currencyCache';
+
+// ------------------------------------------------------------
+// ----------------Stock Watchlist Persistence-----------------
+// ------------------------------------------------------------
 
 export function saveStockWatchlist(stocks) {
   localStorage.setItem(STOCK_WATCHLIST_KEY, JSON.stringify(stocks));
@@ -12,8 +20,22 @@ export function loadStockWatchlist() {
 
   if (!savedStocks) return [];
 
-  return JSON.parse(savedStocks);
+  try {
+    const parsedStocks = JSON.parse(savedStocks);
+
+    if (!Array.isArray(parsedStocks)) return [];
+
+    return parsedStocks;
+  } catch (error) {
+    console.error(error);
+
+    return [];
+  }
 }
+
+// ------------------------------------------------------------
+// ------------------Metals Cache Persistence------------------
+// ------------------------------------------------------------
 
 export function saveMetalsCache(metalsCache) {
   localStorage.setItem(METALS_CACHE_KEY, JSON.stringify(metalsCache));
@@ -21,24 +43,39 @@ export function saveMetalsCache(metalsCache) {
 
 export function loadMetalsCache() {
   const savedCache = localStorage.getItem(METALS_CACHE_KEY);
+
   if (!savedCache) return null;
 
-  const parsed = JSON.parse(savedCache);
+  try {
+    const parsedCache = JSON.parse(savedCache);
 
-  if (parsed.prices && !parsed.currentPrices) {
-    localStorage.removeItem(METALS_CACHE_KEY);
+    if (parsedCache.prices && !parsedCache.currentPrices) {
+      localStorage.removeItem(METALS_CACHE_KEY);
+      return null;
+    }
+
+    return {
+      lastFetched: parsedCache.lastFetched ?? null,
+      currentPrices: parsedCache.currentPrices ?? [],
+      previousPrices: parsedCache.previousPrices ?? [],
+    };
+  } catch (error) {
+    console.error(error);
+
     return null;
   }
-
-  return parsed;
 }
 
+// ------------------------------------------------------------
+// ---------------Currency Watchlist Persistence---------------
+// ------------------------------------------------------------
+
 export function saveCurrencyWatchlist(currencies) {
-  localStorage.setItem(CURRENCY_WATCHLIST_STORAGE_KEY, JSON.stringify(currencies));
+  localStorage.setItem(CURRENCY_WATCHLIST_KEY, JSON.stringify(currencies));
 }
 
 export function loadCurrencyWatchlist() {
-  const savedCurrencies = localStorage.getItem(CURRENCY_WATCHLIST_STORAGE_KEY);
+  const savedCurrencies = localStorage.getItem(CURRENCY_WATCHLIST_KEY);
 
   if (!savedCurrencies) return [];
 
@@ -55,15 +92,15 @@ export function loadCurrencyWatchlist() {
   }
 }
 
+// ------------------------------------------------------------
+// --------------Currency Rates Cache Persistence--------------
+// ------------------------------------------------------------
+
 export function loadCurrencyRatesCache() {
-  const savedCache = localStorage.getItem(CURRENCY_RATES_CACHE_KEY);
+  const savedCache = localStorage.getItem(CURRENCY_CACHE_KEY);
 
   if (!savedCache) {
-    return {
-      lastFetched: null,
-      currentRates: {},
-      previousRates: {},
-    };
+    return getDefaultCurrencyRatesCache();
   }
 
   try {
@@ -77,14 +114,22 @@ export function loadCurrencyRatesCache() {
   } catch (error) {
     console.error(error);
 
-    return {
-      lastFetched: null,
-      currentRates: {},
-      previousRates: {},
-    };
+    return getDefaultCurrencyRatesCache();
   }
 }
 
 export function saveCurrencyRatesCache(cache) {
-  localStorage.setItem(CURRENCY_RATES_CACHE_KEY, JSON.stringify(cache));
+  localStorage.setItem(CURRENCY_CACHE_KEY, JSON.stringify(cache));
+}
+
+// ------------------------------------------------------------
+// ----------------------Internal Helpers----------------------
+// ------------------------------------------------------------
+
+function getDefaultCurrencyRatesCache() {
+  return {
+    lastFetched: null,
+    currentRates: {},
+    previousRates: {},
+  };
 }

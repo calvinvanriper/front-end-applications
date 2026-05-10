@@ -28,9 +28,18 @@ export class StockWatchlist {
   }
 
   removeStock(symbol) {
+    const originalLength = this.stocks.length;
+
     this.stocks = this.stocks.filter(
       (stock) => this.normalizeSymbol(stock.symbol) !== this.normalizeSymbol(symbol)
     );
+
+    if (this.stocks.length === originalLength) {
+      return {
+        success: false,
+        reason: 'stockNotFound',
+      };
+    }
 
     return {
       success: true,

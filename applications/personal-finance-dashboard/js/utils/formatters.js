@@ -1,23 +1,11 @@
+// ------------------------------------------------------------
+// --------------------Currency Formatting---------------------
+// ------------------------------------------------------------
+
 export function formatCurrency(amount, denomination) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: denomination }).format(
     amount
   );
-}
-
-export function formatDateTime(dateString) {
-  const date = new Date(dateString);
-
-  const pad = (value) => String(value).padStart(2, '0');
-
-  const year = date.getFullYear();
-  const month = pad(date.getMonth() + 1);
-  const day = pad(date.getDate());
-
-  const hours = pad(date.getHours());
-  const minutes = pad(date.getMinutes());
-  const seconds = pad(date.getSeconds());
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 export function getCurrencySymbol(currencyCode) {
@@ -45,6 +33,30 @@ export function formatCurrencyOptionLabel(currencyCode) {
   return `${currencyCode} - ${symbol} ${name}`;
 }
 
+// ------------------------------------------------------------
+// ----------------------Date Formatting-----------------------
+// ------------------------------------------------------------
+
+export function formatDateTime(dateString) {
+  if (!dateString) return 'Not updated yet';
+
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) return 'Invalid date';
+
+  const pad = (value) => String(value).padStart(2, '0');
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 export function formatLastUpdated(timestamp) {
   if (!timestamp) return 'Not updated yet';
 
@@ -59,6 +71,10 @@ export function formatLastUpdated(timestamp) {
     .replace(',', ' •');
 }
 
+// ------------------------------------------------------------
+// -----------------------Stock Helpers------------------------
+// ------------------------------------------------------------
+
 export function getLatestStockTimestamp(stocks) {
   if (!stocks || stocks.length === 0) return null;
 
@@ -70,4 +86,14 @@ export function getLatestStockTimestamp(stocks) {
 
     return currentTime > latestTime ? stock.lastUpdated : latest;
   }, null);
+}
+
+// ------------------------------------------------------------
+// ------------------Shared Direction Helpers------------------
+// ------------------------------------------------------------
+
+export function getChangeDirection(change) {
+  if (change > 0) return 'positive';
+  if (change < 0) return 'negative';
+  return 'neutral';
 }

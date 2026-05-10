@@ -2,6 +2,7 @@ import { getMetalPrices } from '../api/metals-api.js';
 import { renderMetalsSection } from '../ui/render.js';
 import { METALS_REFRESH_COOLDOWN_MS } from '../config/constants.js';
 import { loadMetalsCache, saveMetalsCache } from '../storage/persistence.js';
+import { getChangeDirection } from '../utils/formatters.js';
 
 export async function processRefreshMetals() {
   const now = Date.now();
@@ -22,10 +23,17 @@ export async function processRefreshMetals() {
   try {
     const metals = await getMetalPrices();
 
-    if (!metals || metals.some((metal) => !metal.price)) {
+    if (!metals || metals.length === 0) {
       return {
         success: false,
         reason: 'emptyMetalsList',
+      };
+    }
+
+    if (metals.some((metal) => !metal.price)) {
+      return {
+        success: false,
+        reason: 'invalidMetalsData',
       };
     }
 
@@ -82,7 +90,7 @@ function applyMetalPriceChanges(currentMetals, previousMetals = []) {
       ...metal,
       change,
       changePercent,
-      changeDirection: change > 0 ? 'positive' : change < 0 ? 'negative' : 'neutral',
+      changeDirection: getChangeDirection(change),
     };
   });
 }

@@ -12,6 +12,7 @@ import {
   loadCurrencyRatesCache,
   saveCurrencyRatesCache,
 } from '../storage/persistence.js';
+import { getChangeDirection } from '../utils/formatters.js';
 
 export async function processCurrencyConversion() {
   const amount = Number(dom.amountInput.value);
@@ -126,7 +127,7 @@ function buildCurrencyCardData(currencyCode, ratesData, ratesCache) {
   const change = hasPrevious ? convertedAmount - previousConvertedAmount : 0;
   const changePercent = hasPrevious ? (change / previousConvertedAmount) * 100 : 0;
 
-  const changeDirection = change > 0 ? 'positive' : change < 0 ? 'negative' : 'neutral';
+  const changeDirection = getChangeDirection(change);
 
   return {
     code: currencyCode,
@@ -150,7 +151,7 @@ export function processCurrencyWatchlistClear(currencyWatchlist) {
     const clearedAt = new Date().toISOString();
 
     saveCurrencyWatchlist(clearedWatchlist);
-    renderCurrencySection(clearedWatchlist, clearedAt);
+    renderCurrencySection([], clearedAt);
   }
 
   return result;

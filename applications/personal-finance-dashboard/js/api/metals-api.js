@@ -26,9 +26,6 @@ function normalizeMetalData(data) {
       symbol: metal.symbol,
       name: metal.name,
       price,
-      change: 0,
-      changePercent: 0,
-      changeDirection: 'neutral',
       lastUpdated: new Date().toISOString(),
     };
   });

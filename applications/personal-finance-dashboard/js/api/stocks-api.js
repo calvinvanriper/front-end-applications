@@ -1,10 +1,5 @@
 import { FINNHUB_API_KEY, FINNHUB_BASE_URL } from '../config/api-config.js';
-
-function getChangeDirection(change) {
-  if (change > 0) return 'positive';
-  if (change < 0) return 'negative';
-  return 'neutral';
-}
+import { getChangeDirection } from '../utils/formatters.js';
 
 export async function getStockQuote(symbol, name = null) {
   const normalizedSymbol = symbol.trim().toUpperCase();

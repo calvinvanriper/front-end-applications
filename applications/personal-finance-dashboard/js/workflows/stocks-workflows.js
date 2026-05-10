@@ -1,6 +1,6 @@
 import { dom } from '../ui/dom.js';
 import { getStockQuote } from '../api/stocks-api.js';
-import { renderStockWatchlist, renderStockSearchResults } from '../ui/render.js';
+import { renderStocksSection, renderStockSearchResults } from '../ui/render.js';
 import { saveStockWatchlist } from '../storage/persistence.js';
 
 export async function processStockLookup(stockWatchlist) {
@@ -17,13 +17,17 @@ export async function processStockLookup(stockWatchlist) {
     const addResult = stockWatchlist.addStock(stockQuote);
 
     if (!addResult.success) {
-      dom.stockSymbolInput.value = '';
       return addResult;
     }
 
-    renderStockWatchlist(stockWatchlist.getStocks());
+    renderStocksSection(stockWatchlist.getStocks());
     saveStockWatchlist(stockWatchlist.getStocks());
     renderStockSearchResults([]);
+
+    return {
+      success: true,
+      reason: 'stockAdded',
+    };
   } catch (error) {
     console.error(error.message);
 
@@ -50,7 +54,7 @@ export async function processStockRemoval(stockWatchlist, symbol) {
     return removeResult;
   }
 
-  renderStockWatchlist(stockWatchlist.getStocks());
+  renderStocksSection(stockWatchlist.getStocks());
   saveStockWatchlist(stockWatchlist.getStocks());
 
   return removeResult;
@@ -63,7 +67,7 @@ export function processClearStockWatchlist(stockWatchlist) {
     return clearResult;
   }
 
-  renderStockWatchlist(stockWatchlist.getStocks());
+  renderStocksSection(stockWatchlist.getStocks());
   saveStockWatchlist(stockWatchlist.getStocks());
 
   return clearResult;
@@ -92,7 +96,7 @@ export async function processRefreshStockWatchlist(stockWatchlist) {
 
   stockWatchlist.replaceStocks(refreshedStocks);
 
-  renderStockWatchlist(stockWatchlist.getStocks());
+  renderStocksSection(stockWatchlist.getStocks());
   saveStockWatchlist(stockWatchlist.getStocks());
 
   if (failedResults.length > 0) {

@@ -37,6 +37,6 @@
   border-left: var(--border-toast-add);
 }
 
-.toast--errors {
+.toast--error {
   border-left: var(--border-toast-danger);
 }
