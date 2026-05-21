@@ -5,7 +5,9 @@ import {
   formatCurrencyOptionLabel,
   formatLastUpdated,
   getLatestStockTimestamp,
+  formatDate,
 } from '../utils/formatters.js';
+import { calculateGoalProgress } from '../utils/calculations.js';
 
 // ------------------------------------------------------------
 // ---------------------Currency Converter---------------------
@@ -60,7 +62,9 @@ function renderStockWatchlist(stockQuotes) {
     .map(
       (stockQuote) => `
         <article class="asset-card stock-card" data-symbol="${stockQuote.symbol}">
-          ${createRemoveButtonMarkup(stockQuote.symbol)}
+          ${createCardActionsMarkup([
+            createRemoveButtonMarkup(stockQuote.symbol, stockQuote.symbol),
+          ])}
 
           <div class="asset-card-header">
             <h3>${stockQuote.symbol}</h3>
@@ -170,7 +174,7 @@ function renderCurrencyWatchlist(currencies) {
 
       return `
         <article class="asset-card currency-card">
-          ${createRemoveButtonMarkup(currency.code)}
+          ${createCardActionsMarkup([createRemoveButtonMarkup(currency.code, currency.code)])}
 
           <div class="currency-card-header">
             <p class="asset-price currency-price">${priceText}</p>
@@ -201,6 +205,83 @@ function setClearCurrenciesButtonState(isEnabled) {
 }
 
 // ------------------------------------------------------------
+// -----------------------Savings Goals------------------------
+// ------------------------------------------------------------
+
+export function renderSavingsGoalsSection(goals) {
+  if (!goals || goals.length === 0) {
+    renderEmptyState(dom.savingsGoalsList, 'No savings goals added yet.');
+    setClearGoalsButtonState(false);
+    return;
+  }
+
+  const sortedGoals = [...goals].sort((a, b) => {
+    return new Date(a.targetDate) - new Date(b.targetDate);
+  });
+
+  dom.savingsGoalsList.innerHTML = sortedGoals
+    .map((goal) => {
+      const progressPercent = calculateGoalProgress(goal.currentAmount, goal.targetAmount);
+
+      return `
+          <article class="asset-card savings-goal-card">
+            ${createCardActionsMarkup([
+              createUpdateButtonMarkup(goal.id, goal.name),
+              createRemoveButtonMarkup(goal.id, goal.name),
+            ])}
+            <h3 class="savings-goal-name">${goal.name}</h3>
+
+            <div class="goal-progress">
+              <div class="goal-progress-bar">
+                <div class="goal-progress-fill" style="--progress-width: ${progressPercent}%">
+                  ${progressPercent.toFixed(0)}%
+                </div>
+              </div>
+            </div>
+
+            <div class="goal-meta">
+              <p>Saved: ${formatCurrency(goal.currentAmount, 'USD')}</p>
+              <p>${formatDate(goal.targetDate)}</p>
+              <p>Goal: ${formatCurrency(goal.targetAmount, 'USD')}</p>
+            </div>
+          </article>
+        `;
+    })
+    .join('');
+
+  setClearGoalsButtonState(true);
+}
+
+export function renderGoalFormMode(isEditing) {
+  dom.goalFormTitle.textContent = isEditing ? 'Update Savings Goal' : 'Add Savings Goal';
+  dom.saveGoalBtn.textContent = isEditing ? 'Update Goal' : 'Save Goal';
+}
+
+export function showGoalForm(isEditing = false) {
+  renderGoalFormMode(isEditing);
+  toggleElementVisibility(dom.savingsGoalsOverlay, true);
+}
+
+export function hideGoalForm() {
+  toggleElementVisibility(dom.savingsGoalsOverlay, false);
+}
+
+export function populateGoalForm(goal) {
+  dom.goalNameInput.value = goal.name;
+  dom.goalTargetAmountInput.value = goal.targetAmount;
+  dom.goalCurrentAmountInput.value = goal.currentAmount;
+  dom.goalTargetDateInput.value = goal.targetDate;
+}
+
+export function resetGoalForm() {
+  dom.goalForm.reset();
+}
+
+function setClearGoalsButtonState(isEnabled) {
+  dom.clearGoalsBtn.disabled = !isEnabled;
+}
+
+// ------------------------------------------------------------
 // ----------------------Internal Helpers----------------------
 // ------------------------------------------------------------
 
@@ -212,18 +293,37 @@ function renderEmptyState(container, message) {
   container.innerHTML = `<p class="empty-state">${message}</p>`;
 }
 
-function createRemoveButtonMarkup(symbol) {
+function createCardActionsMarkup(actions) {
   return `
     <div class="asset-card-actions">
-      <button
-        class="remove-icon-btn remove-icon-btn--danger"
-        type="button"
-        data-symbol="${symbol}"
-        aria-label="Remove ${symbol}"
-      >
-        x
-      </button>
+      ${actions.join('')}
     </div>
+  `;
+}
+
+function createRemoveButtonMarkup(id, label) {
+  return `
+    <button
+      class="icon-btn icon-btn--danger"
+      type="button"
+      data-symbol="${id}"
+      aria-label="Remove ${label}"
+    >
+      x
+    </button>
+  `;
+}
+
+function createUpdateButtonMarkup(id, label) {
+  return `
+    <button
+      class="icon-btn icon-btn--update"
+      type="button"
+      data-symbol="${id}"
+      aria-label="Update ${label}"
+    >
+      <img src="./assets/icons/refresh.svg" alt="" aria-hidden="true" />
+    </button>
   `;
 }
 
@@ -238,4 +338,8 @@ function createAssetChangeMarkup(change, changePercent, changeDirection, extraCl
       </span>
     </div>
   `;
+}
+
+function toggleElementVisibility(element, isVisible) {
+  element.classList.toggle('hidden', !isVisible);
 }

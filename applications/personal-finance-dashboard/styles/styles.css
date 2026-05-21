@@ -12,6 +12,7 @@
 @import './features/currency-converter.css';
 @import './features/stocks-watchlist.css';
 @import './features/metals-watchlist.css';
+@import './features/savings-goals.css';
 @import './features/currencies-watchlist.css';
 
 @import './utilities.css';

@@ -10,13 +10,16 @@ import {
   renderStocksSection,
   renderMetalsSection,
   setAddCurrencyButtonState,
+  renderSavingsGoalsSection,
 } from './ui/render.js';
 import { StockWatchlist } from './models/stock-watchlist.js';
 import { CurrencyWatchlist } from './models/currency-watchlist.js';
+import { SavingsGoals } from './models/savings-goals.js';
 import {
   loadStockWatchlist,
   loadMetalsCache,
   loadCurrencyWatchlist,
+  loadSavingsGoalsCache,
 } from './storage/persistence.js';
 import { appState } from './state/app-state.js';
 import { processCurrencyWatchlistRefresh } from './workflows/currency-workflows.js';
@@ -27,6 +30,7 @@ import { processCurrencyWatchlistRefresh } from './workflows/currency-workflows.
 
 const stockWatchlist = new StockWatchlist();
 const currencyWatchlist = new CurrencyWatchlist(loadCurrencyWatchlist());
+const savingsGoals = new SavingsGoals(loadSavingsGoalsCache());
 
 // ------------------------------------------------------------
 // -----------------------Initialization-----------------------
@@ -47,6 +51,7 @@ async function initializeApp() {
   populateCurrencyOptions(currencies);
   renderStocksSection(stockWatchlist.getStocks());
   await processCurrencyWatchlistRefresh(currencyWatchlist);
+  renderSavingsGoalsSection(savingsGoals.getGoals());
 }
 
 // ------------------------------------------------------------
@@ -114,6 +119,23 @@ dom.currencyWatchlist.addEventListener('click', (event) => {
   handlers.handleCurrencyWatchlistClick(event, currencyWatchlist);
 });
 
+// ------------------------------------------------------------
+// ------------------Savings Goals Listeners-------------------
+// ------------------------------------------------------------
+
+dom.goalForm.addEventListener('submit', (event) => {
+  handlers.handleGoalFormSubmit(event, savingsGoals);
+});
+dom.addGoalBtn.addEventListener('click', () => {
+  handlers.handleAddGoalClick(savingsGoals);
+});
+dom.clearGoalsBtn.addEventListener('click', () => {
+  handlers.handleClearGoalsClick(savingsGoals);
+});
+dom.savingsGoalsList.addEventListener('click', (event) => {
+  handlers.handleSavingsGoalsClick(event, savingsGoals);
+});
+dom.cancelGoalBtn.addEventListener('click', handlers.handleCancelGoalClick);
 // ------------------------------------------------------------
 // ----------------Confirmation Modal Listeners----------------
 // ------------------------------------------------------------

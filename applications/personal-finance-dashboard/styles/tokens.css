@@ -20,6 +20,7 @@
   --amber-500: #f59e0b;
   --purple-500: #8b5cf6;
 
+  --green-400: #4ddba7;
   --green-500: #2ddf78;
   --green-600: #22c55e;
   --green-700: #15803d;
@@ -71,6 +72,7 @@
   --radius-lg: 0.65rem;
   --radius-xl: 0.75rem;
   --radius-2xl: 1rem;
+  --radius-full: 9999px;
 
   /* -----------------------SHADOW TOKENS------------------------ */
 
@@ -133,6 +135,7 @@
   --accent-blue-focus: var(--blue-400);
   --accent-gold: var(--amber-500);
   --accent-purple: var(--purple-500);
+  --accent-emerald: var(--green-400);
 
   /* ---------------SEMANTIC: INTERACTIVE SURFACES--------------- */
 

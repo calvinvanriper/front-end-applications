@@ -160,3 +160,55 @@
 .stock-form .form-field {
   margin-bottom: 0;
 }
+
+/* ---------------------Savings Goals Form--------------------- */
+
+.application-forms {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+
+  pointer-events: none;
+}
+
+.form-overlay {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  place-items: center;
+
+  padding: 1rem;
+  background: var(--black-a50);
+
+  pointer-events: auto;
+}
+
+.form-field {
+  margin-bottom: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.form-title {
+  padding-bottom: 0.25rem;
+}
+
+.goal-form {
+  width: min(100%, 32rem);
+  padding: 1.5rem;
+
+  background: var(--bg-alt-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-modal);
+}
+
+.goal-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+}

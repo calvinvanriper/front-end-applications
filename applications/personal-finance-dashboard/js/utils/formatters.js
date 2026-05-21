@@ -71,6 +71,20 @@ export function formatLastUpdated(timestamp) {
     .replace(',', ' •');
 }
 
+export function formatDate(dateString) {
+  if (!dateString) return 'No date set';
+
+  const date = new Date(`${dateString}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) return 'Invalid date';
+
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(date);
+}
+
 // ------------------------------------------------------------
 // -----------------------Stock Helpers------------------------
 // ------------------------------------------------------------
@@ -86,14 +100,4 @@ export function getLatestStockTimestamp(stocks) {
 
     return currentTime > latestTime ? stock.lastUpdated : latest;
   }, null);
-}
-
-// ------------------------------------------------------------
-// ------------------Shared Direction Helpers------------------
-// ------------------------------------------------------------
-
-export function getChangeDirection(change) {
-  if (change > 0) return 'positive';
-  if (change < 0) return 'negative';
-  return 'neutral';
 }

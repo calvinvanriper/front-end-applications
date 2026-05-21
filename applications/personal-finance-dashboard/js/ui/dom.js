@@ -43,6 +43,28 @@ export const dom = {
   currencyUpdatedMeta: document.getElementById('currency-updated-meta'),
 
   // ------------------------------------------------------------
+  // Savings Goals
+  // ------------------------------------------------------------
+
+  savingsGoalsList: document.getElementById('savings-goals-list'),
+  addGoalBtn: document.getElementById('add-goal-btn'),
+  clearGoalsBtn: document.getElementById('clear-goals-btn'),
+
+  // ------------------------------------------------------------
+  // Savings Goals Form
+  // ------------------------------------------------------------
+
+  savingsGoalsOverlay: document.getElementById('savings-goals-overlay'),
+  goalForm: document.getElementById('goal-form'),
+  goalFormTitle: document.getElementById('goal-form-title'),
+  goalNameInput: document.getElementById('goal-name'),
+  goalTargetAmountInput: document.getElementById('goal-target-amount'),
+  goalCurrentAmountInput: document.getElementById('goal-current-amount'),
+  goalTargetDateInput: document.getElementById('goal-target-date'),
+  saveGoalBtn: document.getElementById('save-goal-btn'),
+  cancelGoalBtn: document.getElementById('cancel-goal-btn'),
+
+  // ------------------------------------------------------------
   // Confirmation Modal
   // ------------------------------------------------------------
 

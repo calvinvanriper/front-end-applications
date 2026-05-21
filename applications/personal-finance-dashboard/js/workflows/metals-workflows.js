@@ -2,7 +2,7 @@ import { getMetalPrices } from '../api/metals-api.js';
 import { renderMetalsSection } from '../ui/render.js';
 import { METALS_REFRESH_COOLDOWN_MS } from '../config/constants.js';
 import { loadMetalsCache, saveMetalsCache } from '../storage/persistence.js';
-import { getChangeDirection } from '../utils/formatters.js';
+import { getChangeDirection } from '../utils/calculations.js';
 
 export async function processRefreshMetals() {
   const now = Date.now();

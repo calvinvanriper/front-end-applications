@@ -1,5 +1,4 @@
 import { dom } from '../ui/dom.js';
-import { processCurrencyConversion } from '../workflows/currency-workflows.js';
 import {
   processStockLookup,
   processStockRemoval,
@@ -11,12 +10,25 @@ import {
   processCurrencyWatchlistRefresh,
   processCurrencyWatchlistClear,
   processCurrencyWatchlistRemove,
+  processCurrencyConversion,
 } from '../workflows/currency-workflows.js';
 import { processRefreshMetals } from '../workflows/metals-workflows.js';
+import {
+  processGoalFormSubmit,
+  processGoalsClear,
+  processGoalRemove,
+  processGoalUpdate,
+} from '../workflows/savings-workflows.js';
 import { showConfirmationModal, hideConfirmationModal } from '../ui/modals.js';
 import { appState } from '../state/app-state.js';
 import { searchStockSymbols } from '../api/stocks-api.js';
-import { renderStockSearchResults } from '../ui/render.js';
+import {
+  renderStockSearchResults,
+  showGoalForm,
+  hideGoalForm,
+  populateGoalForm,
+  resetGoalForm,
+} from '../ui/render.js';
 import { showResultToast } from '../ui/notifications.js';
 
 let stockSearchTimeout = null;
@@ -146,6 +158,75 @@ export function handleCurrencyWatchlistClick(event, currencyWatchlist) {
 }
 
 // ------------------------------------------------------------
+// -------------------Savings Goals Handlers-------------------
+// ------------------------------------------------------------
+
+export function handleAddGoalClick() {
+  appState.editingGoalId = null;
+  showGoalForm(false);
+}
+
+export function handleCancelGoalClick() {
+  appState.editingGoalId = null;
+
+  resetGoalForm();
+  hideGoalForm();
+}
+
+export function handleClearGoalsClick(savingsGoals) {
+  handleClearWatchlistConfirmation(() => {
+    const result = processGoalsClear(savingsGoals);
+    showResultToast(result);
+  }, 'Savings Goals');
+}
+
+export function handleSavingsGoalsClick(event, savingsGoals) {
+  const updateBtn = event.target.closest('.icon-btn--update');
+
+  if (updateBtn) {
+    const { symbol } = updateBtn.dataset;
+
+    const goal = savingsGoals.getGoals().find((goal) => goal.id === symbol);
+
+    appState.editingGoalId = symbol;
+
+    populateGoalForm(goal);
+    showGoalForm(true);
+
+    return;
+  }
+
+  handleWatchlistRemoveClick(event, savingsGoals, processGoalRemove, (goalId) => {
+    const goal = savingsGoals.getGoals().find((goal) => goal.id === goalId);
+    return goal?.name ?? 'Savings Goal';
+  });
+}
+
+export function handleGoalFormSubmit(event, savingsGoals) {
+  event.preventDefault();
+
+  const goalFormData = {
+    name: dom.goalNameInput.value.trim(),
+    targetAmount: Number(dom.goalTargetAmountInput.value),
+    currentAmount: Number(dom.goalCurrentAmountInput.value),
+    targetDate: dom.goalTargetDateInput.value,
+  };
+
+  const result = appState.editingGoalId
+    ? processGoalUpdate(savingsGoals, appState.editingGoalId, goalFormData)
+    : processGoalFormSubmit(savingsGoals, goalFormData);
+
+  showResultToast(result);
+
+  if (result.success) {
+    appState.editingGoalId = null;
+
+    resetGoalForm();
+    hideGoalForm();
+  }
+}
+
+// ------------------------------------------------------------
 // ----------------Confirmation Modal Handlers-----------------
 // ------------------------------------------------------------
 
@@ -211,15 +292,22 @@ function handleRemoveWatchlistItemConfirmation(onConfirm, symbol) {
   });
 }
 
-function handleWatchlistRemoveClick(event, watchlist, removeWorkflow) {
-  const removeButton = event.target.closest('.remove-icon-btn');
+function handleWatchlistRemoveClick(
+  event,
+  watchlist,
+  removeWorkflow,
+  getDisplayLabel = (value) => value
+) {
+  const removeButton = event.target.closest('.icon-btn--danger');
 
   if (!removeButton) return;
 
   const { symbol } = removeButton.dataset;
 
+  const displayLabel = getDisplayLabel(symbol);
+
   handleRemoveWatchlistItemConfirmation(async () => {
     const result = await removeWorkflow(watchlist, symbol);
     showResultToast(result);
-  }, symbol);
+  }, displayLabel);
 }

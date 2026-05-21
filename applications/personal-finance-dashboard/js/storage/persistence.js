@@ -6,6 +6,7 @@ const STOCK_WATCHLIST_KEY = 'personalFinanceDashboard.stockWatchlist';
 const METALS_CACHE_KEY = 'personalFinanceDashboard.metalsCache';
 const CURRENCY_WATCHLIST_KEY = 'personalFinanceDashboard.currencyWatchlist';
 const CURRENCY_CACHE_KEY = 'personalFinanceDashboard.currencyCache';
+const SAVINGS_GOALS_KEY = 'personalFinanceDashboard.savingsGoals';
 
 // ------------------------------------------------------------
 // ----------------Stock Watchlist Persistence-----------------
@@ -120,6 +121,34 @@ export function loadCurrencyRatesCache() {
 
 export function saveCurrencyRatesCache(cache) {
   localStorage.setItem(CURRENCY_CACHE_KEY, JSON.stringify(cache));
+}
+
+// ------------------------------------------------------------
+// --------------Savings Goals Cache Persistence---------------
+// ------------------------------------------------------------
+
+export function loadSavingsGoalsCache() {
+  const savedGoals = localStorage.getItem(SAVINGS_GOALS_KEY);
+
+  if (!savedGoals) {
+    return [];
+  }
+
+  try {
+    const parsedGoals = JSON.parse(savedGoals);
+
+    if (!Array.isArray(parsedGoals)) return [];
+
+    return parsedGoals;
+  } catch (error) {
+    console.error(error);
+
+    return [];
+  }
+}
+
+export function saveSavingsGoalsCache(goals) {
+  localStorage.setItem(SAVINGS_GOALS_KEY, JSON.stringify(goals));
 }
 
 // ------------------------------------------------------------

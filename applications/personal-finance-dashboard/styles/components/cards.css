@@ -51,3 +51,16 @@
 .eyebrow--metals {
   color: var(--accent-gold);
 }
+
+.eyebrow--savings {
+  color: var(--accent-emerald);
+}
+
+.asset-card-actions {
+  display: flex;
+  gap: 0.35rem;
+
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}

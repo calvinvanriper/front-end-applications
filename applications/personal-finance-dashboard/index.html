@@ -4,19 +4,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Finance Dashboard</title>
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg" />
     <link rel="stylesheet" href="./styles/styles.css" />
   </head>
   <body>
     <header>
       <div class="dashboard-header">
-        <img src="./favicon.svg" alt="Dashboard icon" class="dashboard-header-icon" />
+        <img src="./assets/icons/favicon.svg" alt="Dashboard icon" class="dashboard-header-icon" />
         <h1 class="dashboard-title">Personal Finance Dashboard</h1>
       </div>
     </header>
 
     <main class="page">
       <section class="dashboard-grid">
+        <section class="dashboard-card savings-goals-card">
+          <div class="card-header">
+            <div>
+              <p class="eyebrow eyebrow--savings">Savings Goals</p>
+              <h2>Savings Goals</h2>
+              <p class="card-description">Track progress toward your financial targets</p>
+            </div>
+          </div>
+          <div class="savings-goals-actions">
+            <button type="button" id="add-goal-btn" class="btn btn--primary">Add Goal</button>
+            <button type="button" id="clear-goals-btn" class="btn btn--danger">Clear Goals</button>
+          </div>
+          <div id="savings-goals-list" class="savings-goals-list"></div>
+        </section>
+
         <section class="dashboard-card currency-converter-card">
           <div class="card-header">
             <div>
@@ -186,6 +201,40 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <section id="application-forms" class="application-forms" aria-label="Application forms">
+      <div id="savings-goals-overlay" class="form-overlay hidden">
+        <form class="goal-form form-panel" id="goal-form">
+          <h2 id="goal-form-title" class="form-title goal-form-title">Add Savings Goal</h2>
+
+          <div class="form-field">
+            <label for="goal-name">Goal Name</label>
+            <input id="goal-name" type="text" required />
+          </div>
+
+          <div class="form-field">
+            <label for="goal-target-amount">Target Amount</label>
+            <input id="goal-target-amount" type="number" min="0" step="0.01" required />
+          </div>
+
+          <div class="form-field">
+            <label for="goal-current-amount">Current Amount</label>
+            <input id="goal-current-amount" type="number" min="0" step="0.01" required />
+          </div>
+
+          <div class="form-field">
+            <label for="goal-target-date">Target Date</label>
+            <input id="goal-target-date" type="date" required />
+          </div>
+
+          <div class="form-actions">
+            <button id="save-goal-btn" class="btn btn--primary" type="submit">Save Goal</button>
+            <button id="cancel-goal-btn" class="btn btn--danger" type="button">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div id="asset-allocation-overlay" class="form-overlay hidden"></div>
     </section>
 
     <section

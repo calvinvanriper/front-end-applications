@@ -45,6 +45,14 @@ export const toastMessages = {
     emptyCurrencyWatchlist: 'No currencies to clear',
     currencyConversionRequired: 'Convert a currency before adding it to the watchlist',
     currencyNotFound: 'Currency not found in watchlist',
+
+    // Goals
+    goalNotFound: 'Savings goal not found',
+    emptyGoalsList: 'No savings goals to clear',
+    invalidGoalName: 'Enter a valid goal name',
+    invalidGoalTargetAmount: 'Enter a valid target amount',
+    invalidGoalCurrentAmount: 'Enter a valid current amount',
+    invalidGoalTargetDate: 'Enter a valid target date',
   },
   success: {
     // Stock Watchlist
@@ -65,6 +73,13 @@ export const toastMessages = {
     currenciesCleared: 'Currency watchlist cleared',
     currenciesRefreshed: 'Currency rates updated',
     currencyRemoved: 'Currency removed from watchlist',
+
+    // Goals
+    goalAdded: 'Savings goal added',
+    goalRemoved: 'Savings goal removed',
+    goalsCleared: 'Savings goals cleared',
+    goalsReplaced: 'Savings goals synchronized',
+    goalUpdated: 'Savings goal updated',
   },
 };
 

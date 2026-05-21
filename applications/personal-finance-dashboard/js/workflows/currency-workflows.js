@@ -12,7 +12,7 @@ import {
   loadCurrencyRatesCache,
   saveCurrencyRatesCache,
 } from '../storage/persistence.js';
-import { getChangeDirection } from '../utils/formatters.js';
+import { getChangeDirection } from '../utils/calculations.js';
 
 export async function processCurrencyConversion() {
   const amount = Number(dom.amountInput.value);
