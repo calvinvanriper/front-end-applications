@@ -1,6 +1,6 @@
 # Personal Finance Dashboard — Phase 2 MVP (Complete)
 
-> Phase 2 MVP complete — includes Stock Watchlist, Currency Converter, Precious Metals Tracker, and Currency Watchlist
+> Phase 3A complete — includes Savings Goals planning workflows alongside real-time financial tracking tools
 
 ---
 
@@ -8,12 +8,13 @@
 
 The Personal Finance Dashboard is a modular, state-driven front-end application that provides tools for tracking financial data and performing real-time conversions.
 
-The application has evolved into a multi-feature financial dashboard with four core modules:
+The application has evolved into a multi-feature financial dashboard with five core modules:
 
 - **Stock Watchlist** — track real-time stock prices with autocomplete search and resilient refresh handling
 - **Currency Converter** — convert between currencies using live exchange rates
 - **Currency Watchlist** — track selected currencies with change and percent calculations
 - **Precious Metals Tracker** — monitor gold, silver, platinum, and palladium prices with intelligent caching
+- **Savings Goals System** - create, edit, track, and manage financial savings targets
 
 The application emphasizes clean architecture, resilient API integration, and predictable state management while delivering a cohesive, dashboard-style user experience.
 
@@ -92,6 +93,23 @@ The application emphasizes clean architecture, resilient API integration, and pr
 
 ---
 
+### 🎯 Savings Goals System
+
+- Create savings goals with:
+  - target amount
+  - current saved amount
+  - target completion date
+- Edit existing goals using reusable modal form workflows
+- Remove individual goals with confirmation modal
+- Clear all goals with confirmation modal
+- Visual savings progress indicators
+- Goals automatically sorted by nearest target date
+- Form validation with structured feedback
+- Persistent storage using `localStorage`
+- Shared modal-style form infrastructure
+
+---
+
 ### 🔔 UI & UX Systems
 
 - Toast notifications for user feedback
@@ -100,6 +118,8 @@ The application emphasizes clean architecture, resilient API integration, and pr
 - Responsive, scan-friendly card layout
 - Consistent **asset-card design system** across dashboard modules
 - Section-level metadata (Last refreshed timestamps)
+- reusable modal-style form overlays
+- shared icon action button system
 
 ---
 
@@ -116,6 +136,7 @@ The application follows a modular structure with clear separation of concerns:
 - **State**
   - Centralized UI state via `appState`
   - Handles transient UI flows (modals, confirmations)
+  - Handles transient UI flows (modals, confirmation, edit mode)
 
 - **Workflows**
   - Encapsulate business logic for:
@@ -123,6 +144,7 @@ The application follows a modular structure with clear separation of concerns:
     - metals refresh + caching
     - currency conversion
     - currency watchlist operations (add/remove/clear/refresh + caching)
+  - Savings goal operations (add/update/remove/clear)
   - Return standardized result objects:
 
 ```js
@@ -146,6 +168,8 @@ The application follows a modular structure with clear separation of concerns:
 - **UI Layer**
   - Rendering logic isolated from business logic
   - Shared rendering patterns for asset-based data
+  - Shared modal form rendering helpers
+  - Shared visibility and form-mode rendering systems
 
 - **Handlers**
   - Event listeners call named functions
@@ -199,6 +223,8 @@ The application follows a modular structure with clear separation of concerns:
 ```bash
 personal-finance-dashboard/
   index.html
+  assets/
+    icons/
   styles/
     styles.css
     tokens.css
@@ -256,6 +282,11 @@ personal-finance-dashboard/
   - caching strategies
   - derived data (change + percent calculations)
 - Application structured for scalable feature expansion
+- Savings goals module introduces:
+  - reusable modal form workflows
+  - editable form state management
+  - reusable validation patterns
+  - reusable icon action infrastructure
 
 ---
 
@@ -263,11 +294,24 @@ personal-finance-dashboard/
 
 ### Phase 3 — Financial Planning Tools
 
-- Savings goal tracker
-- Asset allocation tracker
-- Pie or donut chart for allocation breakdown
-- LocalStorage persistence for planning data
+#### ✅ Phase 3A — Savings Goals System
+
+- Editable savings goals workflows
+- Goal progress visualization
+- Goal persistence and validation
+- Shared modal form infrastructure
+
+#### 🚧 Phase 3B — Asset Allocation Tracker
+
+- Asset allocation management
+- Portfolio category tracking
+- Pie or donut chart visualization
+
+#### 📋 Phase 3C — Planning Utilities
+
 - JSON import/export support
+- Additional planning insights
+- Expanded financial management tools
 
 ---
 
