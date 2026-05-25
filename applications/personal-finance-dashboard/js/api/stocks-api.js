@@ -44,7 +44,9 @@ export async function searchStockSymbols(query) {
 
   const data = await response.json();
 
-  return data.result.slice(0, 6).map((result) => ({
+  const results = Array.isArray(data.result) ? data.result : [];
+
+  return results.slice(0, 6).map((result) => ({
     symbol: result.symbol,
     name: result.description,
     type: result.type,

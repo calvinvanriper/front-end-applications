@@ -32,6 +32,28 @@
           <div id="savings-goals-list" class="savings-goals-list"></div>
         </section>
 
+        <section class="dashboard-card asset-portfolio-card">
+          <div class="card-header">
+            <div>
+              <p class="eyebrow eyebrow--assets">Asset Portfolio</p>
+              <h2>Asset Portfolio</h2>
+              <p class="card-description">Track allocation and divestment of assets</p>
+            </div>
+          </div>
+          <div class="asset-portfolio-actions">
+            <button type="button" id="add-asset-btn" class="btn btn--primary">Add Asset</button>
+            <button type="button" id="clear-assets-btn" class="btn btn--danger">
+              Clear Assets
+            </button>
+          </div>
+          <div id="asset-portfolio-meta" class="asset-portfolio-meta"></div>
+
+          <div class="asset-portfolio-layout">
+            <div id="asset-allocation-chart" class="asset-allocation-chart"></div>
+            <div id="asset-portfolio-list" class="asset-portfolio-list"></div>
+          </div>
+        </section>
+
         <section class="dashboard-card currency-converter-card">
           <div class="card-header">
             <div>
@@ -171,6 +193,21 @@
               <p class="card-meta metals-meta">
                 Last updated: <span id="metals-updated-meta">Not updated yet</span>
               </p>
+              <p class="data-attribution metalprice-attribution">
+                Powered by
+                <a
+                  href="https://metalpriceapi.com/"
+                  title="Free Precious Metal Rates API"
+                  target-"_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src="https://metalpriceapi.com/logo-dark.png"
+                    alt="Precious metal data by MetalpriceAPI.com"
+                    height="26"
+                  />
+                </a>
+              </p>
             </div>
           </div>
 
@@ -234,7 +271,46 @@
           </div>
         </form>
       </div>
-      <div id="asset-allocation-overlay" class="form-overlay hidden"></div>
+      <div id="asset-portfolio-overlay" class="form-overlay hidden">
+        <form id="asset-form" class="asset-form form-panel">
+          <h2 id="asset-form-title" class="asset-form-title form-title">Add Asset Allocation</h2>
+
+          <div class="form-field">
+            <label for="asset-category-input">Asset Category</label>
+            <select id="asset-category-input" class="asset-category-input" required></select>
+          </div>
+
+          <div class="form-field">
+            <label for="asset-amount-input">Asset Amount</label>
+            <input
+              id="asset-amount-input"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="15000"
+              required
+            />
+          </div>
+
+          <div class="form-actions">
+            <button id="save-asset-btn" class="btn btn--primary" type="submit">Save Asset</button>
+            <button id="cancel-asset-btn" class="btn btn--danger" type="button">Cancel</button>
+          </div>
+        </form>
+      </div>
+      <div id="asset-details-overlay" class="form-overlay hidden">
+        <div id="asset-details-form" class="asset-details-form form-panel">
+          <h2 id="asset-details-title" class="form-title">Asset Details</h2>
+
+          <div id="asset-details-list" class="asset-details-list"></div>
+
+          <div class="form-actions">
+            <button id="close-asset-details-btn" class="btn btn--primary" type="button">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section

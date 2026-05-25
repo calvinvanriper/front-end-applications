@@ -1,10 +1,11 @@
+import { normalizeCode } from '../utils/normalizers.js';
 export class StockWatchlist {
   constructor() {
     this.stocks = [];
   }
 
   normalizeSymbol(symbol) {
-    return symbol.trim().toUpperCase();
+    return normalizeCode(symbol);
   }
 
   addStock(stockQuote) {
@@ -52,6 +53,13 @@ export class StockWatchlist {
   }
 
   clearStocks() {
+    if (this.stocks.length === 0) {
+      return {
+        success: false,
+        reason: 'emptyStockWatchlist',
+      };
+    }
+
     this.stocks = [];
 
     return {

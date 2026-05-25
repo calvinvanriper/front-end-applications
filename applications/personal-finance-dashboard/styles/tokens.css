@@ -110,6 +110,7 @@
   /* ---------------------SEMANTIC: BORDERS---------------------- */
 
   --border-subtle: var(--border-width-thin) solid var(--slate-300);
+  --border-subtle-dashed: var(--border-width-thin) dashed var(--slate-300);
   --border-toolbar: var(--border-width-thin) solid var(--white-a08);
   --border-transparent: var(--border-width-medium) solid transparent;
   --border-transaction: var(--border-width-thin) solid var(--slate-300-a25);
@@ -136,6 +137,14 @@
   --accent-gold: var(--amber-500);
   --accent-purple: var(--purple-500);
   --accent-emerald: var(--green-400);
+
+  /* ------------------SEMANTIC: ASSET ACCENTS------------------- */
+
+  --accent-asset-stocks: var(--blue-400);
+  --accent-asset-crypto: var(--green-600);
+  --accent-asset-cash: var(--green-400);
+  --accent-asset-metals: var(--amber-500);
+  --accent-asset-real-estate: var(--purple-500);
 
   /* ---------------SEMANTIC: INTERACTIVE SURFACES--------------- */
 

@@ -65,6 +65,38 @@ export const dom = {
   cancelGoalBtn: document.getElementById('cancel-goal-btn'),
 
   // ------------------------------------------------------------
+  // Asset Portfolio
+  // ------------------------------------------------------------
+
+  assetPortfolioMeta: document.getElementById('asset-portfolio-meta'),
+  assetPortfolioList: document.getElementById('asset-portfolio-list'),
+  assetAllocationChart: document.getElementById('asset-allocation-chart'),
+  addAssetBtn: document.getElementById('add-asset-btn'),
+  clearAssetsBtn: document.getElementById('clear-assets-btn'),
+
+  // ------------------------------------------------------------
+  // Asset Portfolio Form
+  // ------------------------------------------------------------
+
+  assetPortfolioOverlay: document.getElementById('asset-portfolio-overlay'),
+  assetForm: document.getElementById('asset-form'),
+  assetFormTitle: document.getElementById('asset-form-title'),
+  assetCategoryInput: document.getElementById('asset-category-input'),
+  assetAmountInput: document.getElementById('asset-amount-input'),
+  saveAssetBtn: document.getElementById('save-asset-btn'),
+  cancelAssetBtn: document.getElementById('cancel-asset-btn'),
+
+  // ------------------------------------------------------------
+  // Asset Details Form
+  // ------------------------------------------------------------
+
+  assetDetailsOverlay: document.getElementById('asset-details-overlay'),
+  assetDetailsForm: document.getElementById('asset-details-form'),
+  assetDetailsTitle: document.getElementById('asset-details-title'),
+  assetDetailsList: document.getElementById('asset-details-list'),
+  closeAssetDetailsBtn: document.getElementById('close-asset-details-btn'),
+
+  // ------------------------------------------------------------
   // Confirmation Modal
   // ------------------------------------------------------------
 

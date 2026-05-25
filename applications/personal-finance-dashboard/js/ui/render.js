@@ -7,7 +7,18 @@ import {
   getLatestStockTimestamp,
   formatDate,
 } from '../utils/formatters.js';
-import { calculateGoalProgress } from '../utils/calculations.js';
+import {
+  calculateGoalProgress,
+  calculateAssetPortfolioTotal,
+  calculateAssetAllocationPercentage,
+  calculateAssetChartSegments,
+  groupAssetsByCategory,
+} from '../utils/calculations.js';
+import {
+  ASSET_CATEGORY_CONFIG,
+  getAssetCategoryLabel,
+  getAssetCategoryColor,
+} from '../config/asset-categories.js';
 
 // ------------------------------------------------------------
 // ---------------------Currency Converter---------------------
@@ -49,7 +60,7 @@ export function setAddCurrencyButtonState(isEnabled) {
 export function renderStocksSection(stockQuotes) {
   renderStockWatchlist(stockQuotes);
   renderStocksUpdatedMeta(getLatestStockTimestamp(stockQuotes));
-  setClearStocksButtonState(stockQuotes.length > 0);
+  setClearButtonState(dom.clearStocksBtn, stockQuotes.length > 0);
 }
 
 function renderStockWatchlist(stockQuotes) {
@@ -61,14 +72,14 @@ function renderStockWatchlist(stockQuotes) {
   dom.stockWatchlist.innerHTML = stockQuotes
     .map(
       (stockQuote) => `
-        <article class="asset-card stock-card" data-symbol="${stockQuote.symbol}">
+        <article class="asset-card stock-card" data-item-id="${stockQuote.symbol}">
           ${createCardActionsMarkup([
             createRemoveButtonMarkup(stockQuote.symbol, stockQuote.symbol),
           ])}
 
           <div class="asset-card-header">
             <h3>${stockQuote.symbol}</h3>
-            <p class="asset-price">$${stockQuote.price.toFixed(2)}</p>
+            <p class="asset-price">${formatCurrency(stockQuote.price)}</p>
           </div>
 
           <p class="asset-name">${stockQuote.name}</p>
@@ -84,6 +95,10 @@ function renderStockWatchlist(stockQuotes) {
     .join('');
 }
 
+function renderStocksUpdatedMeta(timestamp) {
+  renderUpdatedMeta(dom.stocksUpdatedMeta, timestamp);
+}
+
 export function renderStockSearchResults(results) {
   if (!results || results.length === 0) {
     dom.stockSearchResults.innerHTML = '';
@@ -94,7 +109,7 @@ export function renderStockSearchResults(results) {
   dom.stockSearchResults.innerHTML = results
     .map(
       (result) => `
-        <div class="stock-search-item" data-symbol="${result.symbol}" data-name="${result.name}">
+        <div class="stock-search-item" data-item-id="${result.symbol}" data-name="${result.name}">
           <strong>${result.symbol}</strong>
           <span>${result.name}</span>
         </div>
@@ -103,14 +118,6 @@ export function renderStockSearchResults(results) {
     .join('');
 
   dom.stockSearchResults.classList.remove('hidden');
-}
-
-function renderStocksUpdatedMeta(timestamp) {
-  renderUpdatedMeta(dom.stocksUpdatedMeta, timestamp);
-}
-
-function setClearStocksButtonState(isEnabled) {
-  dom.clearStocksBtn.disabled = !isEnabled;
 }
 
 // ------------------------------------------------------------
@@ -134,7 +141,7 @@ function renderMetalsList(metals) {
         <article class="asset-card metal-card">
           <div class="asset-card-header">
             <h3>${metal.symbol}</h3>
-            <p class="asset-price">$${metal.price.toFixed(2)}</p>
+            <p class="asset-price">${formatCurrency(metal.price)}</p>
           </div>
 
           <p class="asset-name">${metal.name}</p>
@@ -150,6 +157,10 @@ function renderMetalsUpdatedMeta(timestamp) {
   renderUpdatedMeta(dom.metalsUpdatedMeta, timestamp);
 }
 
+export function renderCachedMetalsSection(cachedMetals) {
+  renderMetalsSection(cachedMetals.currentPrices, cachedMetals.lastFetched);
+}
+
 // ------------------------------------------------------------
 // ---------------------Currency Watchlist---------------------
 // ------------------------------------------------------------
@@ -157,7 +168,7 @@ function renderMetalsUpdatedMeta(timestamp) {
 export function renderCurrencySection(currencyCards, currencyDate) {
   renderCurrencyWatchlist(currencyCards);
   renderCurrencyUpdatedMeta(currencyDate);
-  setClearCurrenciesButtonState(currencyCards.length > 0);
+  setClearButtonState(dom.clearCurrenciesBtn, currencyCards.length > 0);
 }
 
 function renderCurrencyWatchlist(currencies) {
@@ -200,18 +211,18 @@ function renderCurrencyUpdatedMeta(timestamp) {
   renderUpdatedMeta(dom.currencyUpdatedMeta, timestamp);
 }
 
-function setClearCurrenciesButtonState(isEnabled) {
-  dom.clearCurrenciesBtn.disabled = !isEnabled;
-}
-
 // ------------------------------------------------------------
 // -----------------------Savings Goals------------------------
 // ------------------------------------------------------------
 
 export function renderSavingsGoalsSection(goals) {
+  renderSavingsGoalsList(goals);
+  setClearButtonState(dom.clearGoalsBtn, goals.length > 0);
+}
+
+function renderSavingsGoalsList(goals) {
   if (!goals || goals.length === 0) {
     renderEmptyState(dom.savingsGoalsList, 'No savings goals added yet.');
-    setClearGoalsButtonState(false);
     return;
   }
 
@@ -219,7 +230,7 @@ export function renderSavingsGoalsSection(goals) {
     return new Date(a.targetDate) - new Date(b.targetDate);
   });
 
-  dom.savingsGoalsList.innerHTML = sortedGoals
+  const markup = sortedGoals
     .map((goal) => {
       const progressPercent = calculateGoalProgress(goal.currentAmount, goal.targetAmount);
 
@@ -240,16 +251,16 @@ export function renderSavingsGoalsSection(goals) {
             </div>
 
             <div class="goal-meta">
-              <p>Saved: ${formatCurrency(goal.currentAmount, 'USD')}</p>
+              <p>Saved: ${formatCurrency(goal.currentAmount)}</p>
               <p>${formatDate(goal.targetDate)}</p>
-              <p>Goal: ${formatCurrency(goal.targetAmount, 'USD')}</p>
+              <p>Goal: ${formatCurrency(goal.targetAmount)}</p>
             </div>
           </article>
         `;
     })
     .join('');
 
-  setClearGoalsButtonState(true);
+  dom.savingsGoalsList.innerHTML = markup;
 }
 
 export function renderGoalFormMode(isEditing) {
@@ -277,13 +288,218 @@ export function resetGoalForm() {
   dom.goalForm.reset();
 }
 
-function setClearGoalsButtonState(isEnabled) {
-  dom.clearGoalsBtn.disabled = !isEnabled;
+// ------------------------------------------------------------
+// ----------------------Asset Portfolio-----------------------
+// ------------------------------------------------------------
+
+export function renderAssetPortfolioSection(assets) {
+  const groupedAssets = groupAssetsByCategory(assets);
+
+  renderAssetPortfolioMeta(groupedAssets);
+  renderAssetAllocationChart(groupedAssets);
+  renderAssetPortfolioList(groupedAssets);
+  setClearButtonState(dom.clearAssetsBtn, assets.length > 0);
+}
+
+function renderAssetPortfolioMeta(assets) {
+  if (!assets || assets.length === 0) {
+    dom.assetPortfolioMeta.textContent = '';
+    return;
+  }
+
+  const markup = `
+    <div class="asset-portfolio-meta__item">
+      <span class="asset-portfolio-meta__label">Categories</span>
+      <span class="asset-portfolio-meta__value">${assets.length}</span>
+    </div>
+  `;
+
+  dom.assetPortfolioMeta.innerHTML = markup;
+}
+
+function renderAssetAllocationChart(assets) {
+  if (!assets || assets.length === 0) {
+    dom.assetAllocationChart.innerHTML = `
+      <div class="asset-chart-empty-state">
+        <p>Add assets to generate allocation chart</p>
+      </div>
+    `;
+    return;
+  }
+
+  const segments = calculateAssetChartSegments(assets);
+  const totalPortfolioValue = calculateAssetPortfolioTotal(assets);
+
+  const gradient = segments
+    .map((segment) => {
+      const color = getAssetCategoryColor(segment.category);
+
+      return `${color} ${segment.startDegree}deg ${segment.endDegree}deg`;
+    })
+    .join(', ');
+
+  const markup = `
+    <div
+      class="asset-donut-chart"
+      style="background: conic-gradient(${gradient});"
+      aria-label="Asset allocation chart"
+    >
+      <div class="asset-donut-chart__center">
+        <span class="asset-donut-chart__total">
+          ${formatCurrency(totalPortfolioValue)}
+        </span>
+      </div>
+    </div>
+  `;
+
+  dom.assetAllocationChart.innerHTML = markup;
+}
+
+function renderAssetPortfolioList(assets) {
+  if (!assets || assets.length === 0) {
+    renderEmptyState(dom.assetPortfolioList, 'No assets added yet.');
+    return;
+  }
+
+  const markup = assets
+    .map((asset) => {
+      const assetCategory = asset.category;
+      const assetLabel = getAssetCategoryLabel(assetCategory);
+
+      return `
+        <div class="asset-row">
+          <div class="asset-row__label">
+            <span
+              class="asset-row__marker"
+              style="background-color: ${getAssetCategoryColor(assetCategory)};"
+            ></span>
+            <span class="asset-row__category">${assetLabel}</span>
+            ${createDetailsButtonMarkup(assetCategory, assetLabel)}
+          </div>
+          ${createAssetAmountDetailsMarkup(assets, asset.amount)}
+        </div>
+      `;
+    })
+    .join('');
+
+  dom.assetPortfolioList.innerHTML = markup;
+}
+
+export function populateAssetCategoryOptions() {
+  const options = Object.entries(ASSET_CATEGORY_CONFIG)
+    .map(([category, config]) => {
+      return `<option value="${category}">${config.label}</option>`;
+    })
+    .join('');
+
+  dom.assetCategoryInput.innerHTML = `
+    <option value="">Please select a category</option>
+    ${options}
+  `;
+}
+
+export function renderAssetFormMode(isEditing) {
+  dom.assetFormTitle.textContent = isEditing ? 'Update Asset Allocation' : 'Add Asset Allocation';
+  dom.saveAssetBtn.textContent = isEditing ? 'Update Asset' : 'Save Asset';
+}
+
+export function showAssetForm(isEditing = false) {
+  renderAssetFormMode(isEditing);
+  toggleElementVisibility(dom.assetPortfolioOverlay, true);
+}
+
+export function hideAssetForm() {
+  toggleElementVisibility(dom.assetPortfolioOverlay, false);
+  dom.assetForm.reset();
+}
+
+export function populateAssetForm(asset) {
+  dom.assetCategoryInput.value = asset.category;
+  dom.assetAmountInput.value = asset.amount;
+}
+
+export function showAssetDetailsOverlay(categoryAssets, category) {
+  dom.assetDetailsTitle.textContent = `${getAssetCategoryLabel(category)} Details`;
+  renderCategoryDetailsList(categoryAssets, category);
+  toggleElementVisibility(dom.assetDetailsOverlay, true);
+}
+
+export function hideAssetDetailsOverlay() {
+  toggleElementVisibility(dom.assetDetailsOverlay, false);
+}
+
+function renderCategoryDetailsList(categoryAssets, category) {
+  const categoryLabel = getAssetCategoryLabel(category);
+
+  if (!categoryAssets || categoryAssets.length === 0) {
+    renderEmptyState(dom.assetDetailsList, `No assets added for ${categoryLabel} yet.`);
+    return;
+  }
+
+  const markup = categoryAssets
+    .map((asset) => {
+      return `
+      <div class="asset-row">
+        <div class="asset-row__label">
+          ${createAssetMetadataMarkup(asset)}
+          ${createAssetDetailRowActionsMarkup(asset)}
+        </div>
+
+        ${createAssetAmountDetailsMarkup(categoryAssets, asset.amount)}
+      </div>
+    `;
+    })
+    .join('');
+
+  dom.assetDetailsList.innerHTML = markup;
+}
+
+function createAssetMetadataMarkup(asset) {
+  return `
+    <span class="asset-row__created-date">
+      Created: ${asset.createdAt ? formatDateTime(asset.createdAt) : 'Unknown'}
+    </span>
+    <span class="asset-row__updated-date">
+      Updated: ${asset.updatedAt ? formatDateTime(asset.updatedAt) : 'Unknown'}
+    </span>
+  `;
+}
+
+function createAssetDetailRowActionsMarkup(asset) {
+  return createAssetDetailActionsMarkup([
+    createAssetDetailButtonMarkup({
+      assetId: asset.id,
+      category: asset.category,
+      action: 'update',
+      content: '<img src="./assets/icons/refresh.svg" alt="" aria-hidden="true" />',
+      modifierClass: 'icon-btn--update',
+    }),
+    createAssetDetailButtonMarkup({
+      assetId: asset.id,
+      category: asset.category,
+      action: 'remove',
+      content: 'x',
+      modifierClass: 'icon-btn--danger',
+    }),
+  ]);
+}
+
+function createAssetAmountDetailsMarkup(assets, amount) {
+  return `
+    <div class="asset-row__details">
+      <span class="asset-row__amount">${formatCurrency(amount)}</span>
+      <span class="asset-row__percentage">${calculateAssetAllocationPercentage(assets, amount)}%</span>
+    </div>
+  `;
 }
 
 // ------------------------------------------------------------
 // ----------------------Internal Helpers----------------------
 // ------------------------------------------------------------
+
+function setClearButtonState(element, isEnabled) {
+  element.disabled = !isEnabled;
+}
 
 function renderUpdatedMeta(element, timestamp) {
   element.textContent = formatLastUpdated(timestamp);
@@ -291,6 +507,10 @@ function renderUpdatedMeta(element, timestamp) {
 
 function renderEmptyState(container, message) {
   container.innerHTML = `<p class="empty-state">${message}</p>`;
+}
+
+function toggleElementVisibility(element, isVisible) {
+  element.classList.toggle('hidden', !isVisible);
 }
 
 function createCardActionsMarkup(actions) {
@@ -301,12 +521,20 @@ function createCardActionsMarkup(actions) {
   `;
 }
 
+function createAssetDetailActionsMarkup(actions) {
+  return `
+    <div class="asset-detail-actions">
+      ${actions.join('')}
+    </div>
+  `;
+}
+
 function createRemoveButtonMarkup(id, label) {
   return `
     <button
       class="icon-btn icon-btn--danger"
       type="button"
-      data-symbol="${id}"
+      data-item-id="${id}"
       aria-label="Remove ${label}"
     >
       x
@@ -319,10 +547,40 @@ function createUpdateButtonMarkup(id, label) {
     <button
       class="icon-btn icon-btn--update"
       type="button"
-      data-symbol="${id}"
+      data-item-id="${id}"
       aria-label="Update ${label}"
     >
       <img src="./assets/icons/refresh.svg" alt="" aria-hidden="true" />
+    </button>
+  `;
+}
+
+function createDetailsButtonMarkup(category, label) {
+  return `
+    <button
+      class="icon-btn icon-btn--details"
+      type="button"
+      data-asset-category="${category}"
+      aria-label="Manage ${label} assets"
+    >
+      <img src="./assets/icons/details.svg" alt="" aria-hidden="true" />
+    </button>
+  `;
+}
+
+function createAssetDetailButtonMarkup({ assetId, category, action, content, modifierClass }) {
+  const categoryLabel = getAssetCategoryLabel(category);
+
+  return `
+    <button
+      class="icon-btn ${modifierClass}"
+      type="button"
+      data-asset-id="${assetId}"
+      data-asset-category="${category}"
+      data-asset-action="${action}"
+      aria-label="${action} ${categoryLabel} asset"
+    >
+      ${content}
     </button>
   `;
 }
@@ -338,8 +596,4 @@ function createAssetChangeMarkup(change, changePercent, changeDirection, extraCl
       </span>
     </div>
   `;
-}
-
-function toggleElementVisibility(element, isVisible) {
-  element.classList.toggle('hidden', !isVisible);
 }

@@ -1,10 +1,5 @@
-import { dom } from '../ui/dom.js';
 import { getCurrencyConversion, getCurrencyRates } from '../api/currency-api.js';
-import {
-  renderConversionResult,
-  setAddCurrencyButtonState,
-  renderCurrencySection,
-} from '../ui/render.js';
+import { renderConversionResult, renderCurrencySection } from '../ui/render.js';
 import { appState } from '../state/app-state.js';
 import { BASE_CURRENCY, BASE_AMOUNT } from '../config/constants.js';
 import {
@@ -14,14 +9,7 @@ import {
 } from '../storage/persistence.js';
 import { getChangeDirection } from '../utils/calculations.js';
 
-export async function processCurrencyConversion() {
-  const amount = Number(dom.amountInput.value);
-  const fromCurrency = dom.fromCurrency.value;
-  const toCurrency = dom.toCurrency.value;
-
-  appState.latestSuccessfulConversion = null;
-  setAddCurrencyButtonState(false);
-
+export async function processCurrencyConversion({ amount, fromCurrency, toCurrency }) {
   if (Number.isNaN(amount) || amount <= 0) {
     return {
       success: false,
@@ -32,13 +20,12 @@ export async function processCurrencyConversion() {
   try {
     const conversion = await getCurrencyConversion(amount, fromCurrency, toCurrency);
 
-    appState.latestSuccessfulConversion = conversion;
-    setAddCurrencyButtonState(true);
     renderConversionResult(conversion);
 
     return {
       success: true,
       reason: 'currencyConverted',
+      data: conversion,
     };
   } catch (error) {
     console.error(error);

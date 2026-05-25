@@ -7,4 +7,7 @@ export const appState = {
 
   // Stores the goal currently being edited by the savings goal form.
   editingGoalId: null,
+
+  // Stores the asset currently being edited by the asset form.
+  editingAssetId: null,
 };

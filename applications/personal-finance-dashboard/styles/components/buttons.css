@@ -141,3 +141,14 @@
   display: block;
   object-fit: contain;
 }
+
+.icon-btn--details {
+  padding: 0;
+}
+.icon-btn--details img {
+  width: 1rem;
+  height: 1rem;
+
+  display: block;
+  object-fit: contain;
+}

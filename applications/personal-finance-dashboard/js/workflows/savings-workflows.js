@@ -28,26 +28,6 @@ export function processGoalAdd(savingsGoals, goal) {
   return result;
 }
 
-export function processGoalsClear(savingsGoals) {
-  const result = savingsGoals.clearGoals();
-
-  if (result.success) {
-    syncSavingsGoalsUI(savingsGoals);
-  }
-
-  return result;
-}
-
-export function processGoalRemove(savingsGoals, goalId) {
-  const result = savingsGoals.removeGoal(goalId);
-
-  if (result.success) {
-    syncSavingsGoalsUI(savingsGoals);
-  }
-
-  return result;
-}
-
 export function processGoalUpdate(savingsGoals, goalId, updatedGoalData) {
   const validationResult = validateGoalData(updatedGoalData);
 
@@ -62,6 +42,26 @@ export function processGoalUpdate(savingsGoals, goalId, updatedGoalData) {
   }
 
   syncSavingsGoalsUI(savingsGoals);
+
+  return result;
+}
+
+export function processGoalRemove(savingsGoals, goalId) {
+  const result = savingsGoals.removeGoal(goalId);
+
+  if (result.success) {
+    syncSavingsGoalsUI(savingsGoals);
+  }
+
+  return result;
+}
+
+export function processGoalsClear(savingsGoals) {
+  const result = savingsGoals.clearGoals();
+
+  if (result.success) {
+    syncSavingsGoalsUI(savingsGoals);
+  }
 
   return result;
 }

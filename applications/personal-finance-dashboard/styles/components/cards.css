@@ -56,11 +56,12 @@
   color: var(--accent-emerald);
 }
 
-.asset-card-actions {
-  display: flex;
-  gap: 0.35rem;
+.eyebrow--assets {
+  color: var(--accent-emerald);
+}
 
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+.data-attribution {
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-muted);
 }

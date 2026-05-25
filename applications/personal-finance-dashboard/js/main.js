@@ -8,18 +8,22 @@ import { getSupportedCurrencies } from './api/currency-api.js';
 import {
   populateCurrencyOptions,
   renderStocksSection,
-  renderMetalsSection,
+  renderCachedMetalsSection,
   setAddCurrencyButtonState,
   renderSavingsGoalsSection,
+  renderAssetPortfolioSection,
+  populateAssetCategoryOptions,
 } from './ui/render.js';
 import { StockWatchlist } from './models/stock-watchlist.js';
 import { CurrencyWatchlist } from './models/currency-watchlist.js';
 import { SavingsGoals } from './models/savings-goals.js';
+import { AllocationPortfolio } from './models/allocation-portfolio.js';
 import {
   loadStockWatchlist,
   loadMetalsCache,
   loadCurrencyWatchlist,
   loadSavingsGoalsCache,
+  loadAssetPortfolioCache,
 } from './storage/persistence.js';
 import { appState } from './state/app-state.js';
 import { processCurrencyWatchlistRefresh } from './workflows/currency-workflows.js';
@@ -31,122 +35,202 @@ import { processCurrencyWatchlistRefresh } from './workflows/currency-workflows.
 const stockWatchlist = new StockWatchlist();
 const currencyWatchlist = new CurrencyWatchlist(loadCurrencyWatchlist());
 const savingsGoals = new SavingsGoals(loadSavingsGoalsCache());
+const assetPortfolio = new AllocationPortfolio(loadAssetPortfolioCache());
 
 // ------------------------------------------------------------
 // -----------------------Initialization-----------------------
 // ------------------------------------------------------------
 
 async function initializeApp() {
-  const currencies = await getSupportedCurrencies();
-  const savedStocks = loadStockWatchlist();
-  const cachedMetals = loadMetalsCache();
+  const initialData = await loadInitialAppData();
 
+  hydrateAppInstances(initialData);
+  initializeStaticUI(initialData);
+  await renderInitialUI(initialData);
+  initializeEventListeners();
+}
+
+async function loadInitialAppData() {
+  return {
+    currencies: await getSupportedCurrencies(),
+    savedStocks: loadStockWatchlist(),
+    cachedMetals: loadMetalsCache(),
+  };
+}
+
+function hydrateAppInstances({ savedStocks }) {
+  stockWatchlist.loadStocks(savedStocks);
+}
+
+function initializeStaticUI({ currencies }) {
   setAddCurrencyButtonState(false);
+  populateCurrencyOptions(currencies);
+  populateAssetCategoryOptions();
+}
 
+async function renderInitialUI({ cachedMetals }) {
   if (cachedMetals?.currentPrices?.length > 0) {
-    renderMetalsSection(cachedMetals.currentPrices, cachedMetals.lastFetched);
+    renderCachedMetalsSection(cachedMetals);
   }
 
-  stockWatchlist.loadStocks(savedStocks);
-  populateCurrencyOptions(currencies);
   renderStocksSection(stockWatchlist.getStocks());
   await processCurrencyWatchlistRefresh(currencyWatchlist);
   renderSavingsGoalsSection(savingsGoals.getGoals());
+  renderAssetPortfolioSection(assetPortfolio.getAssets());
+}
+
+function initializeEventListeners() {
+  initializeGlobalListeners();
+  initializeCurrencyConverterListeners();
+  initializeStockWatchlistListeners();
+  initializeMetalsTrackerListeners();
+  initializeCurrencyWatchlistListeners();
+  initializeSavingsGoalsListeners();
+  initializeAssetPortfolioListeners();
+  initializeConfirmationModalListeners();
 }
 
 // ------------------------------------------------------------
-// -------------------Global Event Listeners-------------------
+// -------------------Listener Registration--------------------
 // ------------------------------------------------------------
 
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Escape' && appState.pendingConfirmationAction) {
-    handlers.handleCancelConfirmationClick();
-  }
-});
-document.addEventListener('click', (event) => {
-  if (!event.target.closest('.stock-search-field')) {
-    dom.stockSearchResults.classList.add('hidden');
-  }
-});
+// ----------------------Global Listeners----------------------
 
-// ------------------------------------------------------------
+function initializeGlobalListeners() {
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && appState.pendingConfirmationAction) {
+      handlers.handleCancelConfirmationClick();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!event.target.closest('.stock-search-field')) {
+      dom.stockSearchResults.classList.add('hidden');
+    }
+  });
+}
+
 // ----------------Currency Converter Listeners----------------
-// ------------------------------------------------------------
 
-dom.converterForm.addEventListener('submit', handlers.handleConvertSubmit);
-dom.swapBtn.addEventListener('click', handlers.handleCurrencySwap);
-dom.addCurrencyBtn.addEventListener('click', () => {
-  handlers.handleAddCurrencyClick(currencyWatchlist);
-});
+function initializeCurrencyConverterListeners() {
+  dom.converterForm.addEventListener('submit', handlers.handleConvertSubmit);
 
-// ------------------------------------------------------------
+  dom.swapBtn.addEventListener('click', handlers.handleCurrencySwap);
+
+  dom.addCurrencyBtn.addEventListener('click', () => {
+    handlers.handleAddCurrencyClick(currencyWatchlist);
+  });
+}
+
 // -----------------Stock Watchlist Listeners------------------
-// ------------------------------------------------------------
 
-dom.stockForm.addEventListener('submit', (event) => {
-  handlers.handleStockSubmit(event, stockWatchlist);
-});
+function initializeStockWatchlistListeners() {
+  dom.stockForm.addEventListener('submit', (event) => {
+    handlers.handleStockSubmit(event, stockWatchlist);
+  });
 
-dom.stockWatchlist.addEventListener('click', (event) => {
-  handlers.handleStockWatchlistClick(event, stockWatchlist);
-});
-dom.clearStocksBtn.addEventListener('click', () => {
-  handlers.handleClearStockWatchlistClick(stockWatchlist);
-});
-dom.refreshStocksBtn.addEventListener('click', () => {
-  handlers.handleRefreshStockWatchlistClick(stockWatchlist);
-});
-dom.stockSymbolInput.addEventListener('input', handlers.handleStockSymbolInput);
-dom.stockSearchResults.addEventListener('click', handlers.handleStockSearchResultClick);
+  dom.stockWatchlist.addEventListener('click', (event) => {
+    handlers.handleStockWatchlistClick(event, stockWatchlist);
+  });
 
-// ------------------------------------------------------------
+  dom.clearStocksBtn.addEventListener('click', () => {
+    handlers.handleClearStockWatchlistClick(stockWatchlist);
+  });
+
+  dom.refreshStocksBtn.addEventListener('click', () => {
+    handlers.handleRefreshStockWatchlistClick(stockWatchlist);
+  });
+
+  dom.stockSymbolInput.addEventListener('input', handlers.handleStockSymbolInput);
+
+  dom.stockSearchResults.addEventListener('click', handlers.handleStockSearchResultClick);
+}
+
 // ------------------Metals Tracker Listeners------------------
-// ------------------------------------------------------------
 
-dom.refreshMetalsBtn.addEventListener('click', handlers.handleRefreshMetalsClick);
+function initializeMetalsTrackerListeners() {
+  dom.refreshMetalsBtn.addEventListener('click', handlers.handleRefreshMetalsClick);
+}
 
-// ------------------------------------------------------------
 // ----------------Currency Watchlist Listeners----------------
-// ------------------------------------------------------------
 
-dom.refreshCurrenciesBtn.addEventListener('click', () => {
-  handlers.handleRefreshCurrenciesClick(currencyWatchlist);
-});
-dom.clearCurrenciesBtn.addEventListener('click', () => {
-  handlers.handleClearCurrenciesClick(currencyWatchlist);
-});
-dom.currencyWatchlist.addEventListener('click', (event) => {
-  handlers.handleCurrencyWatchlistClick(event, currencyWatchlist);
-});
+function initializeCurrencyWatchlistListeners() {
+  dom.refreshCurrenciesBtn.addEventListener('click', () => {
+    handlers.handleRefreshCurrenciesClick(currencyWatchlist);
+  });
 
-// ------------------------------------------------------------
+  dom.clearCurrenciesBtn.addEventListener('click', () => {
+    handlers.handleClearCurrenciesClick(currencyWatchlist);
+  });
+
+  dom.currencyWatchlist.addEventListener('click', (event) => {
+    handlers.handleCurrencyWatchlistClick(event, currencyWatchlist);
+  });
+}
+
 // ------------------Savings Goals Listeners-------------------
-// ------------------------------------------------------------
 
-dom.goalForm.addEventListener('submit', (event) => {
-  handlers.handleGoalFormSubmit(event, savingsGoals);
-});
-dom.addGoalBtn.addEventListener('click', () => {
-  handlers.handleAddGoalClick(savingsGoals);
-});
-dom.clearGoalsBtn.addEventListener('click', () => {
-  handlers.handleClearGoalsClick(savingsGoals);
-});
-dom.savingsGoalsList.addEventListener('click', (event) => {
-  handlers.handleSavingsGoalsClick(event, savingsGoals);
-});
-dom.cancelGoalBtn.addEventListener('click', handlers.handleCancelGoalClick);
-// ------------------------------------------------------------
+function initializeSavingsGoalsListeners() {
+  dom.goalForm.addEventListener('submit', (event) => {
+    handlers.handleGoalFormSubmit(event, savingsGoals);
+  });
+
+  dom.addGoalBtn.addEventListener('click', () => {
+    handlers.handleAddGoalClick(savingsGoals);
+  });
+
+  dom.clearGoalsBtn.addEventListener('click', () => {
+    handlers.handleClearGoalsClick(savingsGoals);
+  });
+
+  dom.savingsGoalsList.addEventListener('click', (event) => {
+    handlers.handleSavingsGoalsClick(event, savingsGoals);
+  });
+
+  dom.cancelGoalBtn.addEventListener('click', handlers.handleCancelGoalClick);
+}
+
+// -----------------Asset Portfolio Listeners------------------
+
+function initializeAssetPortfolioListeners() {
+  dom.assetForm.addEventListener('submit', (event) => {
+    handlers.handleAssetFormSubmit(event, assetPortfolio);
+  });
+
+  dom.addAssetBtn.addEventListener('click', () => {
+    handlers.handleAddAssetClick(assetPortfolio);
+  });
+
+  dom.clearAssetsBtn.addEventListener('click', () => {
+    handlers.handleClearAssetsClick(assetPortfolio);
+  });
+
+  dom.cancelAssetBtn.addEventListener('click', handlers.handleCancelAssetClick);
+
+  dom.assetPortfolioList.addEventListener('click', (event) => {
+    handlers.handleAssetPortfolioListClick(event, assetPortfolio);
+  });
+
+  dom.closeAssetDetailsBtn.addEventListener('click', handlers.handleCloseAssetDetailsClick);
+
+  dom.assetDetailsForm.addEventListener('click', (event) => {
+    handlers.handleAssetDetailsClick(event, assetPortfolio);
+  });
+}
+
 // ----------------Confirmation Modal Listeners----------------
-// ------------------------------------------------------------
 
-dom.confirmActionBtn.addEventListener('click', handlers.handleConfirmActionClick);
-dom.cancelConfirmationBtn.addEventListener('click', handlers.handleCancelConfirmationClick);
-dom.confirmationModal.addEventListener('click', (event) => {
-  if (event.target === dom.confirmationModal) {
-    handlers.handleCancelConfirmationClick();
-  }
-});
+function initializeConfirmationModalListeners() {
+  dom.confirmActionBtn.addEventListener('click', handlers.handleConfirmActionClick);
+
+  dom.cancelConfirmationBtn.addEventListener('click', handlers.handleCancelConfirmationClick);
+
+  dom.confirmationModal.addEventListener('click', (event) => {
+    if (event.target === dom.confirmationModal) {
+      handlers.handleCancelConfirmationClick();
+    }
+  });
+}
 
 // ------------------------------------------------------------
 // -------------------------Start App--------------------------

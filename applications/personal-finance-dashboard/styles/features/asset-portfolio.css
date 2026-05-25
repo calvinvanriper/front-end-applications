@@ -1,0 +1,173 @@
+.asset-portfolio-card {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+}
+
+.asset-portfolio-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.asset-portfolio-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.asset-portfolio-meta__item {
+  display: flex;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.asset-allocation-chart {
+  min-height: 14rem;
+  min-width: 0;
+  display: grid;
+  place-items: center;
+  border: var(--border-subtle-dashed);
+  border-radius: var(--radius-lg);
+}
+
+.asset-donut-chart {
+  position: relative;
+  width: 11rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.asset-donut-chart::after {
+  content: '';
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  background-color: var(--bg-surface);
+
+  z-index: 1;
+}
+
+.asset-donut-chart__center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+
+  z-index: 2;
+}
+
+.asset-donut-chart__total {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--positive);
+}
+
+.asset-chart-empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 11rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.asset-portfolio-list {
+  display: grid;
+  min-width: 0;
+  gap: 0.75rem;
+}
+
+.asset-row {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: var(--border-subtle);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-alt-surface);
+}
+
+.asset-row__label,
+.asset-row__details {
+  display: flex;
+  align-items: center;
+}
+
+.asset-row__label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.asset-row__details {
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.asset-row__marker {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  background-color: var(--accent-blue-focus);
+}
+
+.asset-row__category {
+  flex: 1;
+}
+
+.asset-row__amount {
+  font-weight: 600;
+}
+
+.asset-row__percentage {
+  min-width: 4rem;
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+.asset-card-actions {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+
+  display: flex;
+  gap: 0.35rem;
+}
+
+.asset-detail-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.asset-details-list {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.asset-details-list .asset-row {
+  position: relative;
+}
+
+.asset-details-list .asset-row__label {
+  display: grid;
+  justify-content: stretch;
+  justify-items: start;
+  gap: 0.35rem;
+  padding-right: 4.5rem;
+}
+
+.asset-row__created-date .asset-row__updated-date {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}

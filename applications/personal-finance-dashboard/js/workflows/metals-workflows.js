@@ -1,5 +1,5 @@
 import { getMetalPrices } from '../api/metals-api.js';
-import { renderMetalsSection } from '../ui/render.js';
+import { renderCachedMetalsSection } from '../ui/render.js';
 import { METALS_REFRESH_COOLDOWN_MS } from '../config/constants.js';
 import { loadMetalsCache, saveMetalsCache } from '../storage/persistence.js';
 import { getChangeDirection } from '../utils/calculations.js';
@@ -12,7 +12,7 @@ export async function processRefreshMetals() {
     cachedMetals?.lastFetched && now - cachedMetals.lastFetched < METALS_REFRESH_COOLDOWN_MS;
 
   if (isCooldownActive && cachedMetals.currentPrices?.length > 0) {
-    renderMetalsSection(cachedMetals.currentPrices, cachedMetals.lastFetched);
+    renderCachedMetalsSection(cachedMetals);
 
     return {
       success: true,
@@ -30,22 +30,23 @@ export async function processRefreshMetals() {
       };
     }
 
-    if (metals.some((metal) => !metal.price)) {
+    if (hasInvalidMetalPriceData(metals)) {
       return {
         success: false,
-        reason: 'invalidMetalsData',
+        reason: 'invalidMetalData',
       };
     }
 
     const metalsWithChanges = applyMetalPriceChanges(metals, cachedMetals?.currentPrices || []);
 
-    saveMetalsCache({
+    const updatedMetalsCache = {
       lastFetched: now,
       previousPrices: cachedMetals?.currentPrices || [],
       currentPrices: metalsWithChanges,
-    });
+    };
 
-    renderMetalsSection(metalsWithChanges, now);
+    saveMetalsCache(updatedMetalsCache);
+    renderCachedMetalsSection(updatedMetalsCache);
 
     return {
       success: true,
@@ -55,7 +56,7 @@ export async function processRefreshMetals() {
     console.error(error);
 
     if (cachedMetals?.currentPrices?.length > 0) {
-      renderMetalsSection(cachedMetals.currentPrices, cachedMetals.lastFetched);
+      renderCachedMetalsSection(cachedMetals);
 
       return {
         success: false,
@@ -93,4 +94,8 @@ function applyMetalPriceChanges(currentMetals, previousMetals = []) {
       changeDirection: getChangeDirection(change),
     };
   });
+}
+
+function hasInvalidMetalPriceData(metals) {
+  return metals.some((metal) => typeof metal.price !== 'number' || Number.isNaN(metal.price));
 }

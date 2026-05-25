@@ -12,6 +12,26 @@
   background: var(--amber-300-a12);
 }
 
-.metals-meta {
-  margin-bottom: 0.75rem;
+.metalprice-attribution {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.metalprice-attribution a {
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.75;
+}
+
+.metalprice-attribution a:hover {
+  opacity: 1;
+}
+
+.metalprice-attribution img {
+  display: block;
+  height: 1rem;
+  width: auto;
 }

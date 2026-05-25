@@ -59,6 +59,12 @@ export class SavingsGoals {
   }
 
   replaceGoals(goals) {
+    if (!Array.isArray(goals)) {
+      return {
+        success: false,
+        reason: 'invalidGoalData',
+      };
+    }
     this.goals = goals;
 
     return {

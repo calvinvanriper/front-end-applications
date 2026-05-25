@@ -1,16 +1,11 @@
-import { dom } from '../ui/dom.js';
 import { getStockQuote } from '../api/stocks-api.js';
-import { renderStocksSection, renderStockSearchResults } from '../ui/render.js';
+import { renderStocksSection } from '../ui/render.js';
 import { saveStockWatchlist } from '../storage/persistence.js';
 
-export async function processStockLookup(stockWatchlist) {
-  const symbolInput = dom.stockSymbolInput.value.trim();
-
+export async function processStockLookup(stockWatchlist, symbolInput, stockName = null) {
   if (!symbolInput) {
     return { success: false, reason: 'emptyStockSymbol' };
   }
-
-  const stockName = dom.stockSymbolInput.dataset.selectedName || null;
 
   try {
     const stockQuote = await getStockQuote(symbolInput, stockName);
@@ -20,9 +15,7 @@ export async function processStockLookup(stockWatchlist) {
       return addResult;
     }
 
-    renderStocksSection(stockWatchlist.getStocks());
-    saveStockWatchlist(stockWatchlist.getStocks());
-    renderStockSearchResults([]);
+    syncStocksUI(stockWatchlist);
 
     return {
       success: true,
@@ -35,10 +28,6 @@ export async function processStockLookup(stockWatchlist) {
       success: false,
       reason: 'stockLookupFailed',
     };
-  } finally {
-    dom.stockSymbolInput.value = '';
-    delete dom.stockSymbolInput.dataset.selectedName;
-    renderStockSearchResults([]);
   }
 }
 
@@ -54,8 +43,7 @@ export async function processStockRemoval(stockWatchlist, symbol) {
     return removeResult;
   }
 
-  renderStocksSection(stockWatchlist.getStocks());
-  saveStockWatchlist(stockWatchlist.getStocks());
+  syncStocksUI(stockWatchlist);
 
   return removeResult;
 }
@@ -67,8 +55,7 @@ export function processClearStockWatchlist(stockWatchlist) {
     return clearResult;
   }
 
-  renderStocksSection(stockWatchlist.getStocks());
-  saveStockWatchlist(stockWatchlist.getStocks());
+  syncStocksUI(stockWatchlist);
 
   return clearResult;
 }
@@ -96,12 +83,18 @@ export async function processRefreshStockWatchlist(stockWatchlist) {
 
   stockWatchlist.replaceStocks(refreshedStocks);
 
-  renderStocksSection(stockWatchlist.getStocks());
-  saveStockWatchlist(stockWatchlist.getStocks());
+  syncStocksUI(stockWatchlist);
 
   if (failedResults.length > 0) {
     return { success: false, reason: 'stocksPartialRefresh' };
   }
 
   return { success: true, reason: 'stocksReplaced' };
+}
+
+function syncStocksUI(stockWatchlist) {
+  const stocks = stockWatchlist.getStocks();
+
+  renderStocksSection(stocks);
+  saveStockWatchlist(stocks);
 }

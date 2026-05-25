@@ -15,11 +15,12 @@ export const BASE_AMOUNT = 100;
 // -----------------------Toast Messages-----------------------
 // ------------------------------------------------------------
 
-export const toastMessages = {
+export const TOAST_MESSAGES = {
   error: {
     // Stock Watchlist
     duplicateStock: 'Stock already added to watchlist',
     emptyWatchlist: 'Cannot refresh empty watchlist',
+    emptyStockWatchlist: 'Cannot clear empty stock watchlist',
     stocksRefreshFailed: 'Unable to refresh watchlist',
     stocksPartialRefresh: 'Some stocks could not be refreshed',
     emptyStockSymbol: 'Enter a stock symbol first',
@@ -37,6 +38,7 @@ export const toastMessages = {
     // Currency Converter
     invalidCurrencyAmount: 'Enter a valid amount greater than 0',
     currencyConverterFailed: 'Unable to convert currency at this time',
+    currencyRatesFailed: 'Unable to refresh currency rates',
 
     // Currency Watchlist
     duplicateCurrency: 'Currency already in watchlist',
@@ -53,6 +55,14 @@ export const toastMessages = {
     invalidGoalTargetAmount: 'Enter a valid target amount',
     invalidGoalCurrentAmount: 'Enter a valid current amount',
     invalidGoalTargetDate: 'Enter a valid target date',
+    invalidGoalData: 'Failed to replace savings goal data',
+
+    // Assets
+    assetNotFound: 'Asset not found',
+    emptyAssetList: 'No asset allocations to clear',
+    invalidAssetData: 'Failed to replace asset data',
+    invalidAssetCategory: 'Select a valid asset category',
+    invalidAssetAmount: 'Enter a valid asset amount',
   },
   success: {
     // Stock Watchlist
@@ -80,6 +90,13 @@ export const toastMessages = {
     goalsCleared: 'Savings goals cleared',
     goalsReplaced: 'Savings goals synchronized',
     goalUpdated: 'Savings goal updated',
+
+    // Assets
+    assetAdded: 'Asset added',
+    assetRemoved: 'Asset removed',
+    assetsCleared: 'Assets portfolio cleared',
+    assetsReplaced: 'Assets portfolio synchronized',
+    assetUpdated: 'Asset updated',
   },
 };
 
@@ -87,7 +104,7 @@ export const toastMessages = {
 // --------------------Metals Configuration--------------------
 // ------------------------------------------------------------
 
-export const metals = [
+export const METALS = [
   {
     symbol: 'XAU',
     name: 'Gold',

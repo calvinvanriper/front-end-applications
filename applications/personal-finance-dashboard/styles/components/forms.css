@@ -212,3 +212,27 @@
   display: block;
   margin-bottom: 0.5rem;
 }
+
+/* --------------------Asset Portfolio Form-------------------- */
+
+.asset-form {
+  width: min(100%, 32rem);
+  padding: 1.5rem;
+
+  background: var(--bg-alt-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-modal);
+}
+
+/* -------------------Asset Details Overlay-------------------- */
+
+.asset-details-form {
+  width: min(100%, 32rem);
+  padding: 1.5rem;
+
+  background: var(--bg-alt-surface);
+  border: var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-modal);
+}

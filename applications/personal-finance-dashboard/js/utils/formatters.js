@@ -2,20 +2,26 @@
 // --------------------Currency Formatting---------------------
 // ------------------------------------------------------------
 
-export function formatCurrency(amount, denomination) {
+export function formatCurrency(amount, denomination = 'USD') {
+  const safeAmount = Number(amount || 0);
+
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: denomination }).format(
-    amount
+    safeAmount
   );
 }
 
 export function getCurrencySymbol(currencyCode) {
-  const parts = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currencyCode,
-    currencyDisplay: 'narrowSymbol',
-  }).formatToParts(0);
+  try {
+    const parts = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currencyCode,
+      currencyDisplay: 'narrowSymbol',
+    }).formatToParts(0);
 
-  return parts.find((part) => part.type === 'currency')?.value ?? currencyCode;
+    return parts.find((part) => part.type === 'currency')?.value ?? currencyCode;
+  } catch {
+    return currencyCode;
+  }
 }
 
 export function getCurrencyName(currencyCode) {
@@ -60,6 +66,10 @@ export function formatDateTime(dateString) {
 export function formatLastUpdated(timestamp) {
   if (!timestamp) return 'Not updated yet';
 
+  const date = new Date(timestamp);
+
+  if (Number.isNaN(date.getTime())) return 'invalid date';
+
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
@@ -67,7 +77,7 @@ export function formatLastUpdated(timestamp) {
     minute: '2-digit',
     hour12: false,
   })
-    .format(new Date(timestamp))
+    .format(new Date(date))
     .replace(',', ' •');
 }
 

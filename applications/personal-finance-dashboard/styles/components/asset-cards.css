@@ -78,14 +78,3 @@
 .asset-change--neutral {
   color: var(--text-secondary);
 }
-
-/* ----------------------ASSET CARD ACTIONS---------------------- */
-
-.asset-card-actions {
-  position: absolute;
-  top: 0.6rem;
-  right: 0.6rem;
-
-  display: flex;
-  gap: 0.35rem;
-}

@@ -1,3 +1,10 @@
+import {
+  isValidStoredAsset,
+  isValidStoredGoal,
+  isValidStoredMetalDisplayData,
+  isValidStoredMetalPrice,
+} from '../utils/validators.js';
+
 // ------------------------------------------------------------
 // ------------------------Storage Keys------------------------
 // ------------------------------------------------------------
@@ -7,14 +14,11 @@ const METALS_CACHE_KEY = 'personalFinanceDashboard.metalsCache';
 const CURRENCY_WATCHLIST_KEY = 'personalFinanceDashboard.currencyWatchlist';
 const CURRENCY_CACHE_KEY = 'personalFinanceDashboard.currencyCache';
 const SAVINGS_GOALS_KEY = 'personalFinanceDashboard.savingsGoals';
+const ASSET_PORTFOLIO_KEY = 'personalFinanceDashboard.assetPortfolio';
 
 // ------------------------------------------------------------
 // ----------------Stock Watchlist Persistence-----------------
 // ------------------------------------------------------------
-
-export function saveStockWatchlist(stocks) {
-  localStorage.setItem(STOCK_WATCHLIST_KEY, JSON.stringify(stocks));
-}
 
 export function loadStockWatchlist() {
   const savedStocks = localStorage.getItem(STOCK_WATCHLIST_KEY);
@@ -34,13 +38,13 @@ export function loadStockWatchlist() {
   }
 }
 
+export function saveStockWatchlist(stocks) {
+  savePersistenceCache(STOCK_WATCHLIST_KEY, stocks);
+}
+
 // ------------------------------------------------------------
 // ------------------Metals Cache Persistence------------------
 // ------------------------------------------------------------
-
-export function saveMetalsCache(metalsCache) {
-  localStorage.setItem(METALS_CACHE_KEY, JSON.stringify(metalsCache));
-}
 
 export function loadMetalsCache() {
   const savedCache = localStorage.getItem(METALS_CACHE_KEY);
@@ -55,10 +59,18 @@ export function loadMetalsCache() {
       return null;
     }
 
+    const currentPrices = Array.isArray(parsedCache.currentPrices)
+      ? parsedCache.currentPrices.filter(isValidStoredMetalDisplayData)
+      : [];
+
+    const previousPrices = Array.isArray(parsedCache.previousPrices)
+      ? parsedCache.previousPrices.filter(isValidStoredMetalPrice)
+      : [];
+
     return {
-      lastFetched: parsedCache.lastFetched ?? null,
-      currentPrices: parsedCache.currentPrices ?? [],
-      previousPrices: parsedCache.previousPrices ?? [],
+      lastFetched: typeof parsedCache.lastFetched === 'number' ? parsedCache.lastFetched : null,
+      currentPrices,
+      previousPrices,
     };
   } catch (error) {
     console.error(error);
@@ -67,13 +79,13 @@ export function loadMetalsCache() {
   }
 }
 
+export function saveMetalsCache(metalsCache) {
+  savePersistenceCache(METALS_CACHE_KEY, metalsCache);
+}
+
 // ------------------------------------------------------------
 // ---------------Currency Watchlist Persistence---------------
 // ------------------------------------------------------------
-
-export function saveCurrencyWatchlist(currencies) {
-  localStorage.setItem(CURRENCY_WATCHLIST_KEY, JSON.stringify(currencies));
-}
 
 export function loadCurrencyWatchlist() {
   const savedCurrencies = localStorage.getItem(CURRENCY_WATCHLIST_KEY);
@@ -91,6 +103,10 @@ export function loadCurrencyWatchlist() {
 
     return [];
   }
+}
+
+export function saveCurrencyWatchlist(currencies) {
+  savePersistenceCache(CURRENCY_WATCHLIST_KEY, currencies);
 }
 
 // ------------------------------------------------------------
@@ -120,7 +136,7 @@ export function loadCurrencyRatesCache() {
 }
 
 export function saveCurrencyRatesCache(cache) {
-  localStorage.setItem(CURRENCY_CACHE_KEY, JSON.stringify(cache));
+  savePersistenceCache(CURRENCY_CACHE_KEY, cache);
 }
 
 // ------------------------------------------------------------
@@ -139,7 +155,7 @@ export function loadSavingsGoalsCache() {
 
     if (!Array.isArray(parsedGoals)) return [];
 
-    return parsedGoals;
+    return parsedGoals.filter(isValidStoredGoal);
   } catch (error) {
     console.error(error);
 
@@ -148,7 +164,33 @@ export function loadSavingsGoalsCache() {
 }
 
 export function saveSavingsGoalsCache(goals) {
-  localStorage.setItem(SAVINGS_GOALS_KEY, JSON.stringify(goals));
+  savePersistenceCache(SAVINGS_GOALS_KEY, goals);
+}
+
+// ------------------------------------------------------------
+// -----------Allocation Portfolio Cache Persistence-----------
+// ------------------------------------------------------------
+
+export function loadAssetPortfolioCache() {
+  const savedAssets = localStorage.getItem(ASSET_PORTFOLIO_KEY);
+
+  if (!savedAssets) return [];
+
+  try {
+    const parsedAssets = JSON.parse(savedAssets);
+
+    if (!Array.isArray(parsedAssets)) return [];
+
+    return parsedAssets.filter(isValidStoredAsset);
+  } catch (error) {
+    console.error(error);
+
+    return [];
+  }
+}
+
+export function saveAssetPortfolioCache(assets) {
+  savePersistenceCache(ASSET_PORTFOLIO_KEY, assets);
 }
 
 // ------------------------------------------------------------
@@ -161,4 +203,8 @@ function getDefaultCurrencyRatesCache() {
     currentRates: {},
     previousRates: {},
   };
+}
+
+function savePersistenceCache(key, data) {
+  localStorage.setItem(key, JSON.stringify(data));
 }

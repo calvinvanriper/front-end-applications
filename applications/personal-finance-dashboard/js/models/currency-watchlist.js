@@ -1,3 +1,4 @@
+import { normalizeCode } from '../utils/normalizers.js';
 export class CurrencyWatchlist {
   constructor(currencies = []) {
     this.currencies = currencies;
@@ -9,11 +10,15 @@ export class CurrencyWatchlist {
   }
 
   hasCurrency(currencyCode) {
-    return this.currencies.includes(currencyCode);
+    const normalizedCode = this.normalizeCurrencyCode(currencyCode);
+
+    return this.currencies.includes(normalizedCode);
   }
 
   addCurrency(currencyCode) {
-    if (this.hasCurrency(currencyCode)) {
+    const normalizedCode = this.normalizeCurrencyCode(currencyCode);
+
+    if (this.hasCurrency(normalizedCode)) {
       return {
         success: false,
         reason: 'duplicateCurrency',
@@ -27,7 +32,7 @@ export class CurrencyWatchlist {
       };
     }
 
-    this.currencies.push(currencyCode);
+    this.currencies.push(normalizedCode);
 
     return {
       success: true,
@@ -37,8 +42,9 @@ export class CurrencyWatchlist {
 
   removeCurrency(currencyCode) {
     const originalLength = this.currencies.length;
+    const normalizedCode = this.normalizeCurrencyCode(currencyCode);
 
-    this.currencies = this.currencies.filter((code) => code !== currencyCode);
+    this.currencies = this.currencies.filter((code) => code !== normalizedCode);
 
     if (this.currencies.length === originalLength) {
       return {
@@ -67,5 +73,9 @@ export class CurrencyWatchlist {
       success: true,
       reason: 'currenciesCleared',
     };
+  }
+
+  normalizeCurrencyCode(currencyCode) {
+    return normalizeCode(currencyCode);
   }
 }
