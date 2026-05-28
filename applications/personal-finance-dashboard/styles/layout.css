@@ -7,9 +7,6 @@
 }
 
 .dashboard-header {
-  min-width: min(1100px, calc(100% - 2rem));
-  margin: 0;
-
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -32,25 +29,21 @@
 }
 
 .dashboard-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
+  margin: 1.5rem 0;
 
-.dashboard-actions__header {
-  min-width: 16rem;
-}
-
-.dashboard-actions__header h2,
-.dashboard-actions__header p {
-  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
 }
 
 .dashboard-actions__buttons {
-  display: flex;
-  flex-wrap: wrap;
+  grid-column: 2;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
+}
+
+.dashboard-actions__buttons .btn {
+  width: 100%;
 }

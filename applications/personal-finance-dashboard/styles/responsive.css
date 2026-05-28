@@ -17,6 +17,14 @@
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
+
+  .dashboard-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-actions__buttons {
+    grid-column: 1;
+  }
 }
 
 /* ------------------LAYOUT COLLAPSE (≤ 560px)------------------- */
