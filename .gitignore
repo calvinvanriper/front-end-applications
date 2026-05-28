@@ -37,6 +37,3 @@ pnpm-debug.log*
 
 # Local notes directory
 notes/
-
-# Local API config
-applications/personal-finance-dashboard/js/config/api-config.js
