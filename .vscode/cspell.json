@@ -54,6 +54,7 @@
     "Watchlist",
     "FINNHUB",
     "METALPRICE",
-    "COOLDOWN"
+    "COOLDOWN",
+    "metalpriceapi"
   ]
 }
