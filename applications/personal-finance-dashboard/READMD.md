@@ -402,33 +402,25 @@ personal-finance-dashboard/
 
 ## 🔐 API Configuration
 
-API keys are not committed to source control.
+This project is deployed as a static front-end portfolio application.
 
-To run the project locally:
-
-1. Copy the example API config file:
-
-   ```bash
-   cp js/config/api-config.example.js js/config/api-config.js
-   ```
-
-2. Add your API keys to `api-config.js`.
-
-3. Run the project with a local development server such as VS Code Live Server.
-
-Example config file:
+The live demo uses public/demo API credentials in `js/config/api-config.js` so the deployed application can run without a backend server.
 
 ```js
-export const FINNHUB_API_KEY = 'your-finnhub-api-key';
+export const FINNHUB_API_KEY = 'demo-or-public-portfolio-key';
 export const FINNHUB_BASE_URL = 'https://finnhub.io/api/v1';
 
-export const METALPRICE_API_KEY = 'your-metalpriceapi-key';
+export const METALPRICE_API_KEY = 'demo-or-public-portfolio-key';
 export const METALPRICE_BASE_URL = 'https://api.metalpriceapi.com/v1/latest';
 
 export const CURRENCY_BASE_URL = 'https://open.er-api.com/v6/latest';
 ```
 
-> Note: API keys used directly in browser-based applications are still visible to users through browser developer tools and network requests. This project keeps keys out of the public repository for safer local development. A production-grade version would use a backend or proxy service to protect private API secrets.
+> API keys used directly in browser-based JavaScript are visible through browser developer tools and network requests. For this reason, the keys used in this project should be treated as public/demo credentials.
+
+A production-grade version of this application would route API requests through a backend service or proxy so private API credentials are not exposed to the browser.
+
+The current approach keeps the live portfolio demo functional while documenting the security tradeoff clearly.
 
 ---
 
