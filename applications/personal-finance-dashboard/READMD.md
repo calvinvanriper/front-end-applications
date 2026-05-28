@@ -446,7 +446,7 @@ This project reinforced several important front-end development concepts:
 
 Possible future enhancements:
 
-- Add backend/proxy support for secure API key handling
+- Add backend/proxy support for production-grade API key protection
 - Add user authentication and cloud persistence
 - Add richer financial insights and historical charts
 - Add portfolio allocation targets
