@@ -16,6 +16,31 @@
     </header>
 
     <main class="page">
+      <div class="dashboard-actions">
+        <button id="export-dashboard-btn" class="btn btn--secondary" type="button">
+          Export Dashboard
+        </button>
+
+        <button id="import-dashboard-btn" class="btn btn--secondary" type="button">
+          Import Dashboard
+        </button>
+
+        <button id="clear-dashboard-data-btn" class="btn btn--danger" type="button">
+          Clear Dashboard Data
+        </button>
+
+        <label for="import-dashboard-input" class="sr-only">
+          Import dashboard JSON file
+        </label>
+
+        <input
+          id="import-dashboard-input"
+          class="hidden"
+          type="file"
+          accept="application/json"
+        />
+      </div>
+
       <section class="dashboard-grid">
         <section class="dashboard-card savings-goals-card">
           <div class="card-header">

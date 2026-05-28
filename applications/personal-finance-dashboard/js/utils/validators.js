@@ -1,4 +1,22 @@
 import { ASSET_CATEGORY_CONFIG } from '../config/asset-categories.js';
+import { normalizeCode } from './normalizers.js';
+
+// ------------------------------------------------------------
+// -----------------Dashboard Data Validators------------------
+// ------------------------------------------------------------
+
+export function isValidDashboardBackup(backup) {
+  return (
+    backup &&
+    backup.app === 'personal-finance-dashboard' &&
+    backup.version === 1 &&
+    backup.data &&
+    Array.isArray(backup.data.stocks) &&
+    Array.isArray(backup.data.currencies) &&
+    Array.isArray(backup.data.savingsGoals) &&
+    Array.isArray(backup.data.assets)
+  );
+}
 
 // ------------------------------------------------------------
 // ------------------Savings Goals Validators------------------
@@ -106,9 +124,59 @@ export function isValidStoredMetalDisplayData(metal) {
   return (
     isValidStoredMetalPrice(metal) &&
     isNumber(metal.change) &&
-    isNumber(metal.changePercentage) &&
+    isNumber(metal.changePercent) &&
     hasText(metal.changeDirection)
   );
+}
+
+export function sanitizeStoredMetalDisplayData(metals) {
+  if (!Array.isArray(metals)) return [];
+
+  return metals.filter(isValidStoredMetalPrice).map((metal) => ({
+    ...metal,
+    change: isNumber(metal.change) ? metal.change : 0,
+    changePercent: isNumber(metal.changePercent) ? metal.changePercent : 0,
+    changeDirection: hasText(metal.changeDirection) ? metal.changeDirection : 'neutral',
+  }));
+}
+
+// ------------------------------------------------------------
+// --------------------Sanitizer Functions---------------------
+// ------------------------------------------------------------
+
+export function sanitizeImportedStocks(stocks) {
+  if (!Array.isArray(stocks)) return [];
+
+  return stocks.filter((stock) => {
+    return (
+      stock &&
+      hasText(stock.symbol) &&
+      hasText(stock.name) &&
+      isPositiveNumber(stock.price) &&
+      isNumber(stock.change) &&
+      isNumber(stock.changePercent) &&
+      hasText(stock.changeDirection) &&
+      isValidDateString(stock.lastUpdated)
+    );
+  });
+}
+
+export function sanitizeImportedCurrencies(currencies) {
+  if (!Array.isArray) return [];
+
+  return [...new Set(currencies.filter(hasText).map(normalizeCode))].slice(0, 4);
+}
+
+export function sanitizeImportedSavingsGoals(goals) {
+  if (!Array.isArray) return [];
+
+  return goals.filter(isValidStoredGoal);
+}
+
+export function sanitizeImportedAssets(assets) {
+  if (!Array.isArray) return [];
+
+  return assets.filter(isValidStoredAsset);
 }
 
 // ------------------------------------------------------------

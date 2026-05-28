@@ -17,6 +17,11 @@ export const BASE_AMOUNT = 100;
 
 export const TOAST_MESSAGES = {
   error: {
+    // Dashboard Data
+    dashboardImportFailed: 'Unable to import dashboard data',
+    invalidDashboardBackup: 'Invalid dashboard backup file',
+    dashboardClearFailed: 'Unable to clear dashboard data',
+
     // Stock Watchlist
     duplicateStock: 'Stock already added to watchlist',
     emptyWatchlist: 'Cannot refresh empty watchlist',
@@ -45,8 +50,10 @@ export const TOAST_MESSAGES = {
     currencyWatchlistFull: 'You can only track up to 4 currencies',
     currencyRemovalFailed: 'Unable to remove currency',
     emptyCurrencyWatchlist: 'No currencies to clear',
+    emptyCurrencyWatchlistRefresh: 'No currencies to refresh',
     currencyConversionRequired: 'Convert a currency before adding it to the watchlist',
     currencyNotFound: 'Currency not found in watchlist',
+    invalidCurrencyData: 'Failed to replace currency data',
 
     // Goals
     goalNotFound: 'Savings goal not found',
@@ -65,6 +72,11 @@ export const TOAST_MESSAGES = {
     invalidAssetAmount: 'Enter a valid asset amount',
   },
   success: {
+    // Dashboard Data
+    dashboardExported: 'Dashboard data exported',
+    dashboardImported: 'Dashboard data imported',
+    dashboardDataCleared: 'Dashboard data cleared',
+
     // Stock Watchlist
     stockAdded: 'Stock added to watchlist',
     stockRemoved: 'Stock removed from watchlist',
@@ -83,6 +95,7 @@ export const TOAST_MESSAGES = {
     currenciesCleared: 'Currency watchlist cleared',
     currenciesRefreshed: 'Currency rates updated',
     currencyRemoved: 'Currency removed from watchlist',
+    currenciesReplaced: 'Currencies synchronized',
 
     // Goals
     goalAdded: 'Savings goal added',

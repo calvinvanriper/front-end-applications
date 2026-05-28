@@ -89,6 +89,10 @@
   background-color: var(--bg-alt-surface);
 }
 
+.asset-row:hover {
+  background-color: var(--green-400-a15);
+}
+
 .asset-row__label,
 .asset-row__details {
   display: flex;

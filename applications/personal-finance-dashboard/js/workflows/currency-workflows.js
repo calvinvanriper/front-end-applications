@@ -66,7 +66,7 @@ export async function processCurrencyWatchlistRefresh(currencyWatchlist) {
 
     return {
       success: false,
-      reason: 'emptyCurrencyWatchlist',
+      reason: 'emptyCurrencyWatchlistRefresh',
     };
   }
 

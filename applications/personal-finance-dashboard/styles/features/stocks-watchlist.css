@@ -11,3 +11,7 @@
 .stock-card:hover {
   background: var(--blue-600-a15);
 }
+
+.stock-card .asset-card-header {
+  padding-right: 1.5rem;
+}

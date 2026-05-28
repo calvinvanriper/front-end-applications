@@ -97,6 +97,14 @@ export const dom = {
   closeAssetDetailsBtn: document.getElementById('close-asset-details-btn'),
 
   // ------------------------------------------------------------
+  // Dashboard Data Actions
+  // ------------------------------------------------------------
+
+  exportDashboardBtn: document.getElementById('export-dashboard-btn'),
+  importDashboardBtn: document.getElementById('import-dashboard-btn'),
+  importDashboardInput: document.getElementById('import-dashboard-input'),
+  clearDashboardDataBtn: document.getElementById('clear-dashboard-data-btn'),
+  // ------------------------------------------------------------
   // Confirmation Modal
   // ------------------------------------------------------------
 

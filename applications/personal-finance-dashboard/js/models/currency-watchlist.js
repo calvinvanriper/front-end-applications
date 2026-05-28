@@ -78,4 +78,20 @@ export class CurrencyWatchlist {
   normalizeCurrencyCode(currencyCode) {
     return normalizeCode(currencyCode);
   }
+
+  replaceCurrencies(currencies) {
+    if (!Array.isArray(currencies)) {
+      return {
+        success: false,
+        reason: 'invalidCurrencyData',
+      };
+    }
+
+    this.currencies = currencies;
+
+    return {
+      success: true,
+      reason: 'currenciesReplaced',
+    };
+  }
 }

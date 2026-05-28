@@ -81,6 +81,7 @@ async function renderInitialUI({ cachedMetals }) {
 
 function initializeEventListeners() {
   initializeGlobalListeners();
+  initializeDashboardDataListeners();
   initializeCurrencyConverterListeners();
   initializeStockWatchlistListeners();
   initializeMetalsTrackerListeners();
@@ -107,6 +108,39 @@ function initializeGlobalListeners() {
     if (!event.target.closest('.stock-search-field')) {
       dom.stockSearchResults.classList.add('hidden');
     }
+  });
+}
+
+// ------------------Dashboard Data Listeners------------------
+
+function initializeDashboardDataListeners() {
+  dom.exportDashboardBtn.addEventListener('click', () => {
+    handlers.handleExportDashboardClick({
+      stockWatchlist,
+      currencyWatchlist,
+      savingsGoals,
+      assetPortfolio,
+    });
+  });
+
+  dom.importDashboardBtn.addEventListener('click', handlers.handleImportDashboardClick);
+
+  dom.importDashboardInput.addEventListener('change', (event) => {
+    handlers.handleDashboardImportFileChange(event, {
+      stockWatchlist,
+      currencyWatchlist,
+      savingsGoals,
+      assetPortfolio,
+    });
+  });
+
+  dom.clearDashboardDataBtn.addEventListener('click', () => {
+    handlers.handleClearDashboardDataClick({
+      stockWatchlist,
+      currencyWatchlist,
+      savingsGoals,
+      assetPortfolio,
+    });
   });
 }
 

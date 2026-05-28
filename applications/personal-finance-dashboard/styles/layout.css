@@ -30,3 +30,27 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
+
+.dashboard-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-actions__header {
+  min-width: 16rem;
+}
+
+.dashboard-actions__header h2,
+.dashboard-actions__header p {
+  margin: 0;
+}
+
+.dashboard-actions__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

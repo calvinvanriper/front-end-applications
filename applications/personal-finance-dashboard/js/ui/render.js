@@ -367,7 +367,7 @@ function renderAssetPortfolioList(assets) {
       const assetLabel = getAssetCategoryLabel(assetCategory);
 
       return `
-        <div class="asset-row">
+        <div class="asset-row asset-category-card">
           <div class="asset-row__label">
             <span
               class="asset-row__marker"

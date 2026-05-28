@@ -3,10 +3,15 @@
   gap: 1rem;
 }
 
-.savings-goals-card {
+.savings-goal-card {
   display: grid;
   align-content: start;
   gap: 1rem;
+  margin-top: 1rem;
+}
+
+.savings-goal-card:hover {
+  background-color: var(--green-400-a15);
 }
 
 .savings-goal-name {

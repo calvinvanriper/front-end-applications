@@ -1,7 +1,7 @@
 import {
   isValidStoredAsset,
   isValidStoredGoal,
-  isValidStoredMetalDisplayData,
+  sanitizeStoredMetalDisplayData,
   isValidStoredMetalPrice,
 } from '../utils/validators.js';
 
@@ -59,9 +59,7 @@ export function loadMetalsCache() {
       return null;
     }
 
-    const currentPrices = Array.isArray(parsedCache.currentPrices)
-      ? parsedCache.currentPrices.filter(isValidStoredMetalDisplayData)
-      : [];
+    const currentPrices = sanitizeStoredMetalDisplayData(parsedCache.currentPrices);
 
     const previousPrices = Array.isArray(parsedCache.previousPrices)
       ? parsedCache.previousPrices.filter(isValidStoredMetalPrice)

@@ -95,6 +95,9 @@ export function formatDate(dateString) {
   }).format(date);
 }
 
+export function getBackupDateStamp() {
+  return new Date().toISOString().slice(0, 10);
+}
 // ------------------------------------------------------------
 // -----------------------Stock Helpers------------------------
 // ------------------------------------------------------------

@@ -11,11 +11,16 @@
   background: var(--surface-muted);
   border-color: var(--positive);
   box-shadow: var(--shadow-soft);
-  align-content: center;
+  align-content: start;
+  text-align: left;
 }
 
 .currency-card:hover {
   background: var(--green-500-a15);
+}
+
+.currency-card .icon-btn--danger {
+  margin: 0;
 }
 
 .currency-watchlist {
@@ -27,12 +32,14 @@
 
 .currency-card-header {
   display: flex;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-right: 1.5rem;
 }
 
 .currency-price {
   margin: 0;
-  text-align: center;
+  text-align: left;
   font-size: 1rem;
   line-height: 1.2;
 }

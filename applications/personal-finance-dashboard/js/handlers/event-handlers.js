@@ -24,6 +24,11 @@ import {
   processAssetsClear,
   processAssetRemove,
 } from '../workflows/assets-workflows.js';
+import {
+  processDashboardExport,
+  processDashboardImport,
+  processDashboardDataClear,
+} from '../workflows/dashboard-backup-workflows.js';
 import { showConfirmationModal, hideConfirmationModal } from '../ui/modals.js';
 import { appState } from '../state/app-state.js';
 import { searchStockSymbols } from '../api/stocks-api.js';
@@ -46,6 +51,90 @@ import { getAssetCategoryLabel } from '../config/asset-categories.js';
 
 let stockSearchTimeout = null;
 
+// ------------------------------------------------------------
+// ------------------Dashboard Data Handlers-------------------
+// ------------------------------------------------------------
+
+export function handleExportDashboardClick(dashboardModels) {
+  const result = processDashboardExport(dashboardModels);
+
+  if (result.success) {
+    downloadJsonFile(result.data.fileName, result.data.backupJson);
+  }
+
+  showResultToast(result);
+}
+
+export function handleImportDashboardClick() {
+  dom.importDashboardInput.click();
+}
+
+export async function handleDashboardImportFileChange(
+  event,
+  { stockWatchlist, currencyWatchlist, savingsGoals, assetPortfolio }
+) {
+  const selectedFile = event.target.files[0];
+
+  if (!selectedFile) return;
+
+  try {
+    const backupJson = await selectedFile.text();
+
+    const result = await processDashboardImport(backupJson, {
+      stockWatchlist,
+      currencyWatchlist,
+      savingsGoals,
+      assetPortfolio,
+    });
+
+    showResultToast(result);
+  } catch (error) {
+    console.error(error);
+
+    showResultToast({
+      success: false,
+      reason: 'dashboardImportFailed',
+    });
+  } finally {
+    event.target.value = '';
+  }
+}
+
+export function handleClearDashboardDataClick({
+  stockWatchlist,
+  currencyWatchlist,
+  savingsGoals,
+  assetPortfolio,
+}) {
+  requestConfirmation({
+    onConfirm: () => {
+      const result = processDashboardDataClear({
+        stockWatchlist,
+        currencyWatchlist,
+        savingsGoals,
+        assetPortfolio,
+      });
+
+      showResultToast(result);
+    },
+    title: 'Clear dashboard data?',
+    message:
+      'This will remove <strong class="warning">ALL</strong> saved stocks, currencies, savings goals, and asset allocations. API caches will be kept.',
+    confirmText: 'Clear Data',
+  });
+}
+
+function downloadJsonFile(fileName, jsonContent) {
+  const blob = new Blob([jsonContent], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  const downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = fileName;
+  downloadLink.click();
+
+  URL.revokeObjectURL(url);
+}
 // ------------------------------------------------------------
 // ----------------Currency Converter Handlers-----------------
 // ------------------------------------------------------------
