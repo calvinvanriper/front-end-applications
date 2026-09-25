@@ -1,62 +1,83 @@
 # Front-End Applications
 
-This repository contains a collection of front-end applications built with a focus on:
+A collection of modular, state-driven applications built with vanilla JavaScript, HTML, and CSS.
 
-- modular architecture
-- maintainable code structure
-- state-driven UI behavior
-- real-world user workflows
+These projects focus on practical user workflows, maintainable architecture, persistent client-side data, and accessible responsive interfaces. Each application functions as a standalone product with its own documentation, live deployment, and source directory.
 
-Each application is designed to function as a standalone product, with clear separation of concerns, predictable state management, and production-minded implementation patterns.
+## Applications
+
+### Personal Finance Dashboard
+
+A modular financial dashboard for tracking market data, savings goals, currencies, precious metals, and asset allocation from a unified interface.
+
+#### Personal Finance Dashboard Highlights
+
+- Stock watchlist with live quotes, autocomplete, caching, and batch updates
+- Precious-metals tracking with refresh controls and fallback data
+- Currency conversion and persistent currency watchlists
+- Savings-goal creation, editing, sorting, and progress tracking
+- Asset-allocation portfolio with grouped categories and visual summaries
+- JSON backup and restoration with validation and partial recovery
+- Reusable modal, notification, confirmation, and validation systems
+- Persistent browser storage using `localStorage`
+
+[View Live Application](https://calvinvanriper.dev/front-end-applications/applications/personal-finance-dashboard/) · [View Source and Documentation](https://github.com/calvinvanriper/front-end-applications/tree/main/applications/personal-finance-dashboard)
 
 ---
 
-## 🚀 Applications
+### Account Transaction Ledger
 
-### 🧾 Bank Account Ledger
+A state-driven account-management application that models the lifecycle of pending and posted transactions while maintaining accurate posted and projected balances.
 
-A state-driven financial tracking application that supports pending and posted transactions, real-time balance calculations, and structured workflows for handling overdrafts and data restoration.
+#### Account Transaction Ledger Highlights
 
-**Key Features:**
-
-- Pending vs posted transaction system
-- Real-time posted and projected balances
+- Pending and posted transaction workflows
+- Real-time posted and projected balance calculations
+- Transaction creation, editing, posting, and deletion
 - Overdraft detection with confirmation workflows
-- Undo delete functionality
-- Persistent storage using `localStorage`
-- JSON import/export backup system
-- Modular architecture with separated concerns
+- Undo-delete functionality through interactive notifications
+- Persistent browser storage using `localStorage`
+- JSON export, import, and data-restoration workflows
+- Modular separation of models, state, workflows, handlers, and UI rendering
 
-🔗 **Live Demo:**  
-[View Application](https://calvinvanriper.dev/front-end-applications/applications/bank-account-ledger/)
+[View Live Application](https://calvinvanriper.dev/front-end-applications/applications/bank-account-ledger/) · [View Source and Documentation](https://github.com/calvinvanriper/front-end-applications/tree/main/applications/bank-account-ledger)
 
----
+## Engineering Approach
 
-## 🧠 Development Approach
+Applications in this repository follow a consistent set of development practices:
 
-Applications in this repository follow a consistent engineering approach:
+- Centralized application state drives interface updates
+- Business rules are separated from DOM rendering
+- Event listeners delegate behavior to named handler functions
+- Multi-step operations are coordinated through workflow modules
+- Data entering the application is validated and normalized
+- Reusable interface systems handle modals, notifications, confirmations, and validation feedback
+- Browser persistence and recovery workflows protect user-entered data
+- Responsive layouts and accessible interaction patterns support a range of devices and input methods
 
-- Business logic is separated from UI rendering
-- Event listeners delegate to named handler functions
-- Application state is centralized and drives UI updates
-- Reusable UI systems are implemented for:
-  - modals
-  - notifications
-  - validation feedback
+## Technology
 
----
-
-## 🛠️ Tech Stack
-
-- Vanilla JavaScript (ES Modules)
+- Vanilla JavaScript
+- JavaScript ES Modules
 - HTML5
-- CSS3 (with design tokens and structured styles)
-- LocalStorage API
+- CSS3
+- REST API integration
+- Web Storage API
+- JSON import and export
+- Responsive and accessible interface design
 
----
+## Repository Structure
 
-## 📌 Notes
+Each application is maintained in its own directory:
 
-This repository focuses on building **complete, functional applications**, rather than isolated exercises. Each project emphasizes usability, clarity, and maintainability.
+```text
+applications/
+├── personal-finance-dashboard/
+└── bank-account-ledger/
+```
 
-Additional applications will be added over time.
+Application directories contain their own implementation files and detailed README documentation covering features, architecture, usage, and project-specific decisions.
+
+## Portfolio
+
+Additional project context, screenshots, and professional experience are available at [calvinvanriper.dev](https://calvinvanriper.dev).
